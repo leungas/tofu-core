@@ -1,7 +1,6 @@
 import { AmqpConnection } from '@golevelup/nestjs-rabbitmq';
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { Capability } from 'src/domain/entities/capability.entity';
 
 /**
  * @class
