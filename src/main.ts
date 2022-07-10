@@ -1,4 +1,3 @@
-
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
@@ -18,7 +17,7 @@ async function bootstrap() {
   // loading the swagger component
   const env = config.get('app.env');
   if (env === 'local' || env === 'debug') {
-    const swagger = (new DocumentBuilder())
+    const swagger = new DocumentBuilder()
       .setTitle('TOFU Workspace Core')
       .setDescription('The service managing tenant projects')
       .setVersion('0.1.0')

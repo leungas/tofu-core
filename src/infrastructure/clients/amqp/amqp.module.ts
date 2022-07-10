@@ -3,6 +3,6 @@ import { AccountsModule } from './accounts/accounts.module';
 
 @Module({
   imports: [AccountsModule],
-  exports: [AccountsModule]
+  exports: [AccountsModule],
 })
 export class AmqpModule {}

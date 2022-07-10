@@ -1,5 +1,5 @@
-import { CapabilityService } from "./capability.service";
-import { SystemService } from "./system.service";
+import { CapabilityService } from './capability.service';
+import { SystemService } from './system.service';
 
 /**
  * @const services

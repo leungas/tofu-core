@@ -26,8 +26,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
         const result = { ...config.get('datasource') };
         return result;
       },
-    })
+    }),
   ],
-  controllers: [AppController],  
+  controllers: [AppController],
 })
 export class AppModule {}
