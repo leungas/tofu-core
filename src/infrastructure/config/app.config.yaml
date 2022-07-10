@@ -1,0 +1,38 @@
+app:
+  capability:
+    - name: maxWorkspacePerAccount
+      description: "The number of workspace allowed per account"
+      system: true
+      value: 1
+  env: local
+  name: workspace.core.tofu
+  port: 3001
+  swagger: 
+    path: docs
+  
+datasource:
+  autoLoadEntities: true
+  database: tofu.core.workspace
+  entities: ['dist/**/*.model{.ts,.js}']
+  host: localhost
+  migrations: ['dist/**/migrations/*{.ts,.js}']
+  migrationsRun: true
+  migrationsTableName: custom_migration_table
+  password: postgres
+  port: 5432
+  synchronize: true
+  type: postgres
+  username: postgres
+
+exchange:
+  host: localhost
+  password: tofuadmin
+  port: 5672
+  user: tofu
+  exchanges:
+    accounts:
+      name: account.core.tofu
+      capability:
+        register: app.capability.register	
+
+        
