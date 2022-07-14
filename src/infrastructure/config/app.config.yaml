@@ -5,10 +5,24 @@ app:
       system: true
       value: 1
   env: local
+  host: localhost
   name: workspace.core.tofu
   port: 3001
   swagger: 
     path: docs
+
+auth:
+  host: localhost:8080
+  client: TOFU
+  realm: TOFU
+  secret: ZgrL9eBMbwaA8vQiwObsRRmiNNQL39FR
+  oauth2:
+    authServerUrl: http://${auth.host}/auth
+    authroizationUrl: http://${auth.host}/auth/realms/${auth.realm}/protocol/openid-connect/auth
+    scopes:
+      profile: 'OpenID Connect built-in scope: profile'
+      email: 'OpenID Connect built-in scope: email'
+    redirectUrl: http://${app.host}:3001
   
 datasource:
   autoLoadEntities: true
