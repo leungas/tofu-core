@@ -1,5 +1,11 @@
-import { Column, CreateDateColumn, Entity, OneToMany, PrimaryColumn } from "typeorm";
-import { WorkspaceModel } from "./workspace.model";
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  OneToMany,
+  PrimaryColumn,
+} from 'typeorm';
+import { WorkspaceModel } from './workspace.model';
 
 /**
  * @class
@@ -7,17 +13,19 @@ import { WorkspaceModel } from "./workspace.model";
  * @description The data model for account base data
  * @author Mark Leung <leungas@gmail.com>
  */
-@Entity({name: 'accounts'})
+@Entity({ name: 'accounts' })
 export class AccountModel {
-    @PrimaryColumn()
-    id: string;
+  @PrimaryColumn()
+  id: string;
 
-    @CreateDateColumn()
-    createdOn: Date;
+  @CreateDateColumn()
+  createdOn: Date;
 
-    @Column('jsonb',{default: {}})
-    settings: Map<string, string>;
+  @Column('jsonb', { default: {} })
+  settings: Map<string, string>;
 
-    @OneToMany(() => WorkspaceModel, (workspace) => workspace.account, {cascade: true})
-    workspaces: WorkspaceModel[];
+  @OneToMany(() => WorkspaceModel, (workspace) => workspace.account, {
+    cascade: true,
+  })
+  workspaces: WorkspaceModel[];
 }

@@ -1,7 +1,10 @@
-import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  Logger,
+  NotFoundException,
+  PreconditionFailedException,
+} from '@nestjs/common';
 import { InjectEntityManager } from '@nestjs/typeorm';
-import { Account } from 'src/domain/entities/account.entity';
-import { User } from 'src/domain/entities/user.entity';
 import { Workspace } from 'src/domain/entities/workspace.entity';
 import { EntityManager, FindManyOptions } from 'typeorm';
 import { AccountModel } from '../models/account.model.';
@@ -13,27 +16,27 @@ import { WorkspaceModel } from '../models/workspace.model';
 
 /**
  * @class
- * @name AccountModelRepository
- * @description The data access logic for the account
+ * @name WorkspaceModelRepository
+ * @description The data access for the workspace data model
  * @author Mark Leung <leungas@gmail.com>
  */
 @Injectable()
-export class AccountModelRepository {
+export class WorkspaceModelRepository {
   /**
    * @private
    * @readonly
    * @property
    * @name logger
-   * @description the logger for console
+   * @description the console logger
    * @type {Logger}
    */
-  private readonly logger: Logger = new Logger('repo[account]', {
+  private readonly logger: Logger = new Logger('repo[workspace]', {
     timestamp: true,
   });
 
   /**
    * @constructor
-   * @param client {EntityManager} the client connection
+   * @param client {EntityManager} the client for database connection
    */
   constructor(
     @InjectEntityManager()
@@ -42,84 +45,80 @@ export class AccountModelRepository {
 
   /**
    * @method convert
-   * @param entity {Account} the entity to convert
-   * @returns {Promise<AccountModel>}
+   * @description Turn entity to data model
+   * @param entity {Workspace} the entity to convert
+   * @returns {Workspace}
    */
-  convert(entity: Account) {
+  convert(entity: Workspace) {
     this.logger.debug(`convert(): Enter`);
     this.logger.debug(`convert(): $entity = ${JSON.stringify(entity)}`);
-    return Object.assign(new AccountModel(), entity);
+    return Object.assign(new WorkspaceModel(), entity);
   }
 
   /**
    * @async
    * @method create
-   * @description Creating a new instance of account
-   * @param entity {Account} the data received
-   * @returns {Promise<Account>}
+   * @description Create a new workspace
+   * @param entity {Workspace} the workspace to create
+   * @returns {Promise<WorkspaceModel>}
    */
-  async create(entity: Workspace, admin: User) {
+  async create(entity: Workspace) {
     this.logger.debug(`create(): Enter`);
     this.logger.debug(`create(): $entity = ${JSON.stringify(entity)}`);
     const result = await this.client.transaction(async (m) => {
-      const account = await m.save(this.convert(entity.account));
+      const account = await this.client.findOne(AccountModel, {
+        where: { id: entity.account.id },
+      });
       this.logger.debug(`create(): $account = ${JSON.stringify(account)}`);
-      let user = await m.findOne(UserModel, { where: { id: admin.id } });
+      const user = await this.client.findOne(UserModel, {
+        where: { id: entity.admin.id },
+      });
       this.logger.debug(`create(): $user = ${JSON.stringify(user)}`);
-      if (!user) user = await m.save(Object.assign(new UserModel(), admin));
+      if (!account || !user) throw new PreconditionFailedException();
       const workspace = await m.save(
-        Object.assign(new WorkspaceModel(), entity, {
-          account: account,
-          admin: user,
-        }),
+        Object.assign(this.convert(entity), { account: account }),
       );
       this.logger.debug(`create(): $workspace = ${JSON.stringify(workspace)}`);
       const roles = await m.find(SystemTeamModel);
       this.logger.debug(`create(): $roles = ${JSON.stringify(roles)}`);
-      const teams = roles.map((r: SystemTeamModel) => {
+      const teams = roles.map((r) => {
         const team = Object.assign(new TeamModel(), r, { owner: workspace });
-        if (r.autoAssign) {
-          const member = Object.assign(new MemberModel(), {
-            team: team,
-            user: user,
-          });
-          team.members.push(member);
-        }
-        this.logger.debug(`create(): $team = ${JSON.stringify(team)}`);
+        if (r.autoAssign)
+          team.members.push(
+            Object.assign(new MemberModel(), { team: team, user: user }),
+          );
         return team;
       });
-
+      this.logger.debug(`create(): $teams = ${JSON.stringify(teams)}`);
       await m.save(teams);
-      return account;
+      return workspace;
     });
     return result;
   }
 
   /**
-   * @async
    * @method get
-   * @description Loading a single account
-   * @param id {string} the account id
-   * @returns {Promose<Account>}
+   * @description Loading an entry of workspace
+   * @param id {string} the ID of the workspace
+   * @returns {Promise<WorkspaceModel>}
    */
   get(id: string) {
     this.logger.debug(`get(): Enter`);
     this.logger.debug(`get(): $id = ${id}`);
-    return this.client.findOne(AccountModel, { where: { id: id } });
+    return this.client.findOne(WorkspaceModel, { where: { id: id } });
   }
 
   /**
    * @async
    * @method remove
-   * @description removing an existing instance of account
-   * @param entity {Account} the instance to remove
-   * @returns {Promose<void>}
+   * @description Removing an existing workspace
+   * @param entity {Workspace} the workspace to remove
+   * @returns {Promise<Workspace>}
    */
-  async remove(entity: Account) {
+  async remove(entity: Workspace) {
     this.logger.debug(`remove(): Enter`);
     this.logger.debug(`remove(): $entity = ${JSON.stringify(entity)}`);
     const model = await this.get(entity.id);
-    this.logger.debug(`remove(): $model = ${JSON.stringify(model)}`);
     if (!model) throw new NotFoundException();
     return this.client.remove(model);
   }
@@ -127,28 +126,27 @@ export class AccountModelRepository {
   /**
    * @async
    * @method search
-   * @description listing instances that matching the filter
-   * @param filter {FindManyOptions<AccountModel>} filter to search
-   * @returns {Promise<AccountModel[]>}
+   * @description Listing workspaces that fulfill the filter
+   * @param filter {FindManyOptions<WorkspaceModel>}
+   * @returns {Promise<WorkspaceModel[]>}
    */
-  async search(filter: FindManyOptions<AccountModel>) {
+  async search(filter: FindManyOptions<WorkspaceModel>) {
     this.logger.debug(`search(): Enter`);
     this.logger.debug(`search(): $filter = ${JSON.stringify(filter)}`);
-    return this.client.find(AccountModel, filter);
+    return this.client.find(WorkspaceModel, filter);
   }
 
   /**
    * @async
    * @method update
-   * @description Updating an existing account
-   * @param entity {Account} update an existing account
-   * @returns {Promise<AccountModel>}
+   * @description Updating an existing workspace
+   * @param entity {Workspace} the workspace to update
+   * @returns {Promise<WorkspaceModel>}
    */
-  async update(entity: Account) {
+  async update(entity: Workspace) {
     this.logger.debug(`update(): Enter`);
     this.logger.debug(`update(): $entity = ${JSON.stringify(entity)}`);
     const model = await this.get(entity.id);
-    this.logger.debug(`update(): $model = ${JSON.stringify(model)}`);
     if (!model) throw new NotFoundException();
     const mutation = Object.assign(model, entity);
     return this.client.save(mutation);

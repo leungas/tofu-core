@@ -1,6 +1,14 @@
-import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
-import { MemberModel } from "./member.model";
-import { WorkspaceModel } from "./workspace.model";
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
+import { MemberModel } from './member.model';
+import { WorkspaceModel } from './workspace.model';
 
 /**
  * @class
@@ -8,26 +16,26 @@ import { WorkspaceModel } from "./workspace.model";
  * @description The team data model in layer
  * @author Mark Leung <leungas@gmail.com>
  */
-@Entity({name: 'teams'})
+@Entity({ name: 'teams' })
 export class TeamModel {
-    @PrimaryGeneratedColumn('uuid')
-    id: string;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
-    @Column()
-    code: string;
+  @Column()
+  code: string;
 
-    @CreateDateColumn()
-    createdOn: Date;
+  @CreateDateColumn()
+  createdOn: Date;
 
-    @UpdateDateColumn()
-    lastUpdatedOn: Date;
+  @UpdateDateColumn()
+  lastUpdatedOn: Date;
 
-    @OneToMany(() => MemberModel, (member) => member.team)
-    members: MemberModel[];
-    
-    @Column()
-    name: string;
+  @OneToMany(() => MemberModel, (member) => member.team)
+  members: MemberModel[];
 
-    @ManyToOne(() => WorkspaceModel, (workspace) => workspace.teams)
-    owner: WorkspaceModel;
+  @Column()
+  name: string;
+
+  @ManyToOne(() => WorkspaceModel, (workspace) => workspace.teams)
+  owner: WorkspaceModel;
 }

@@ -1,4 +1,4 @@
-import { UserModelRepository } from "./user.repository";
+import { UserModelRepository } from './user.repository';
 
 /**
  * @const repositories

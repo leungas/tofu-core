@@ -25,7 +25,6 @@ async function bootstrap() {
       // forbidUnknownValues: true,
     }),
   );
-  
 
   // loading the swagger component
   if (env === 'local' || env === 'debug') {

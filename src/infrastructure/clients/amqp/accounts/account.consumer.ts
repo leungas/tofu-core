@@ -1,7 +1,6 @@
 import { RabbitSubscribe } from '@golevelup/nestjs-rabbitmq';
 import { Injectable, Logger } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { Capability } from 'src/domain/entities/capability.entity';
 import configuration from 'src/infrastructure/config/configuration';
 
 /**
@@ -28,8 +27,7 @@ export class AccountServiceConsumer {
    * @constructor
    * @param emitter {EventEmitter2} the event emitter for service
    */
-  constructor(private readonly emitter: EventEmitter2) {
-  }
+  constructor(private readonly emitter: EventEmitter2) {}
 
   /**
    * @async
@@ -45,7 +43,9 @@ export class AccountServiceConsumer {
   })
   async accountRegistered(message: any[]) {
     this.logger.debug('accountRegistered(): Enter');
-    this.logger.debug(`accountRegistered(): $message = ${JSON.stringify(message)}`);
+    this.logger.debug(
+      `accountRegistered(): $message = ${JSON.stringify(message)}`,
+    );
     // const items = message.map((i) => Object.assign(new Capability(), i));
     // const event = new CapabilityRegisteredEvent(items);
     // await this.emitter.emitAsync('capability.registered', event);

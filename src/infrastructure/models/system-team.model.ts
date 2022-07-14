@@ -1,4 +1,9 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from "typeorm";
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 /**
  * @class
@@ -6,21 +11,20 @@ import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from "typeor
  * @description The model for system defined teams
  * @author Mark Leung <leungas@gmail.com>
  */
-@Entity({name: 'system_teams'})
+@Entity({ name: 'system_teams' })
 export class SystemTeamModel {
+  @PrimaryGeneratedColumn('increment')
+  id: number;
 
-    @PrimaryGeneratedColumn('increment')
-    id: number;
+  @Column({ default: false })
+  autoAssign: boolean;
 
-    @Column({default: false})
-    autoAssign: boolean;
+  @Column()
+  code: string;
 
-    @Column()
-    code: string;
+  @CreateDateColumn()
+  createdOn: Date;
 
-    @CreateDateColumn()
-    createdOn: Date;
-
-    @Column()
-    name: string;
+  @Column()
+  name: string;
 }
