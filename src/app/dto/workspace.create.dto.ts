@@ -1,13 +1,7 @@
 import { Field, InputType } from '@nestjs/graphql';
 import { ApiProperty } from '@nestjs/swagger';
-import {
-  IsDefined,
-  IsInstance,
-  IsNotEmpty,
-  IsOptional,
-  IsUUID,
-} from 'class-validator';
-import { User } from 'src/domain/entities/user.entity';
+import { IsDefined, IsNotEmpty, IsObject, IsOptional } from 'class-validator';
+import { User } from '../../domain/entities/user.entity';
 import { v4 as uuid } from 'uuid';
 
 /**
@@ -18,24 +12,6 @@ import { v4 as uuid } from 'uuid';
  */
 @InputType()
 export class WorkspaceCreateObject {
-  /**
-   * @property
-   * @name account
-   * @description The account holding the workspace',
-   * @type {string}
-   */
-  @Field(() => String, { description: 'The account holding the workspace' })
-  @ApiProperty({
-    name: 'account',
-    description: 'The account holding the workspace',
-    type: 'string',
-    example: uuid(),
-    required: true,
-  })
-  @IsUUID()
-  @IsDefined()
-  account: string;
-
   /**
    * @property
    * @name admin
@@ -60,7 +36,7 @@ export class WorkspaceCreateObject {
     },
     required: false,
   })
-  @IsInstance(User)
+  @IsObject()
   @IsOptional()
   admin?: User;
 

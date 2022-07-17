@@ -212,7 +212,7 @@ export class User {
     example: new Date().toISOString(),
     readOnly: true,
   })
-  lastUpdatedOn: Date;
+  lastUpdatedOn?: Date;
 
   /**
    * @property

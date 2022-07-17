@@ -21,7 +21,7 @@ export class MemberModel {
   enabled: boolean;
 
   @UpdateDateColumn()
-  lsatUpdatedOn: Date;
+  lastUpdatedOn: Date;
 
   @ManyToOne(() => TeamModel, (team) => team.members)
   team: TeamModel;

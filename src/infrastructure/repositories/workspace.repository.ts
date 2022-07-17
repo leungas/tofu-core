@@ -27,7 +27,7 @@ export class WorkspaceModelRepository {
    * @readonly
    * @property
    * @name logger
-   * @description the console logger
+   * @description the this.logger logger
    * @type {Logger}
    */
   private readonly logger: Logger = new Logger('repo[workspace]', {
@@ -81,17 +81,25 @@ export class WorkspaceModelRepository {
       this.logger.debug(`create(): $workspace = ${JSON.stringify(workspace)}`);
       const roles = await m.find(SystemTeamModel);
       this.logger.debug(`create(): $roles = ${JSON.stringify(roles)}`);
-      const teams = roles.map((r) => {
-        const team = Object.assign(new TeamModel(), r, { owner: workspace });
-        if (r.autoAssign)
-          team.members.push(
-            Object.assign(new MemberModel(), { team: team, user: user }),
+      const teams = await Promise.all(
+        roles.map(async (r) => {
+          const team = await m.save(
+            Object.assign(new TeamModel(), r, {
+              id: undefined,
+              owner: workspace,
+            }),
           );
-        return team;
-      });
+          if (r.autoAssign) {
+            await m.save(
+              Object.assign(new MemberModel(), { team: team, user: user }),
+            );
+          }
+          return team;
+        }),
+      );
       this.logger.debug(`create(): $teams = ${JSON.stringify(teams)}`);
       await m.save(teams);
-      return workspace;
+      return await m.findOne(WorkspaceModel, { where: { id: workspace.id } });
     });
     return result;
   }

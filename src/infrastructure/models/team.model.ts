@@ -30,7 +30,10 @@ export class TeamModel {
   @UpdateDateColumn()
   lastUpdatedOn: Date;
 
-  @OneToMany(() => MemberModel, (member) => member.team)
+  @OneToMany(() => MemberModel, (member) => member.team, {
+    cascade: true,
+    eager: true,
+  })
   members: MemberModel[];
 
   @Column()

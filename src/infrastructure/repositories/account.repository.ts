@@ -97,6 +97,20 @@ export class AccountModelRepository {
 
   /**
    * @async
+   * @method createSolo
+   * @description creating an account on its own - not used outside repo level
+   * @param entity {Account} the account to create
+   * @returns {Promise<void>}
+   */
+  async createSolo(entity: Account) {
+    this.logger.debug(`createSolo(): Enter`);
+    this.logger.debug(`createSolo(): $entity = ${JSON.stringify(entity)}`);
+    const model = Object.assign(new AccountModel(), entity);
+    await this.client.save(model);
+  }
+
+  /**
+   * @async
    * @method get
    * @description Loading a single account
    * @param id {string} the account id

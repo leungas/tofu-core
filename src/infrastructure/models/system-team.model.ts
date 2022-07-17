@@ -11,6 +11,12 @@ import {
  * @description The model for system defined teams
  * @author Mark Leung <leungas@gmail.com>
  */
+/**
+ * @class
+ * @name SystemTeamModel
+ * @description The system team data model for data conversion
+ * @author Mark Leung <leungas@gmail.com>
+ */
 @Entity({ name: 'system_teams' })
 export class SystemTeamModel {
   @PrimaryGeneratedColumn('increment')

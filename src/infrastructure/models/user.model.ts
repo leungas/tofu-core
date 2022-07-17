@@ -1,4 +1,4 @@
-import { Attachment } from 'src/domain/types/attachment.type';
+import { Attachment } from '../../domain/types/attachment.type';
 import {
   Column,
   CreateDateColumn,
@@ -50,7 +50,7 @@ export class UserModel {
   @UpdateDateColumn()
   lastUpdatedOn: Date;
 
-  @OneToMany(() => MemberModel, (member) => member.user, { cascade: true })
+  @OneToMany(() => MemberModel, (member) => member.user)
   memberships: MemberModel[];
 
   @Column({ nullable: true })
