@@ -15,49 +15,44 @@ describe('AppController', () => {
   let controller: AppController;
   const mockEntityManager = {
     find: jest.fn().mockImplementation((type, filter) => {
-      console.log(`Mock.find(): $type = ${type}`);
-      console.log(`Mock.find(): $filter = ${JSON.stringify(filter)}`);
       switch (type) {
         case AccountModel:
-          return Promise.resolve([
-            { id: uuid() }
-          ]);
+          return Promise.resolve([{ id: uuid() }]);
         case SystemTeamModel:
-          return Promise.resolve([]);          
+          return Promise.resolve([]);
         default:
-          if (filter.where.name === 'test workspace (not repeat)') 
+          if (filter.where.name === 'test workspace (not repeat)')
             return Promise.resolve([]);
-          else 
-            return Promise.resolve([
-              { id: uuid() },
-              { id: uuid() },
-            ]);
-      }            
+          else return Promise.resolve([{ id: uuid() }, { id: uuid() }]);
+      }
     }),
     findOne: jest.fn().mockImplementation((type, filter) => {
-      console.log(`mockEm.findOne(): $type = ${type}`);
-      console.log(`mockEm.findOne(): $filter = ${JSON.stringify(filter)}`);
       switch (type) {
         case AccountModel:
-          return Promise.resolve({id: uuid()});
+          return Promise.resolve({ id: uuid() });
         default:
-          if (filter.where.account?.id === 'abcdefgh' || filter.where.name === 'test workspace (not repeat)') 
+          if (
+            filter.where.account?.id === 'abcdefgh' ||
+            filter.where.name === 'test workspace (not repeat)'
+          )
             return Promise.resolve(undefined);
-          else 
-            return Promise.resolve({ id: uuid() });
-      }      
+          else return Promise.resolve({ id: uuid() });
+      }
     }),
-    remove: jest.fn().mockImplementation((entities) => Promise.resolve(undefined)),
+    remove: jest
+      .fn()
+      .mockImplementation(() => Promise.resolve(undefined)),
     save: jest.fn().mockImplementation((entities) => {
-      console.log(`mockEm.save(): $entities = ${JSON.stringify(entities)}`);
       if (Array.isArray(entities)) {
-        return Promise.resolve((entities as any[]).map((i) => Object.assign(i, {id: uuid()})));
+        return Promise.resolve(
+          (entities as any[]).map((i) => Object.assign(i, { id: uuid() })),
+        );
       } else {
-        return Promise.resolve(Object.assign(entities, {id: uuid()}));
+        return Promise.resolve(Object.assign(entities, { id: uuid() }));
       }
     }),
     transaction: jest.fn(async (fn) => fn(mockEntityManager)),
-  }
+  };
 
   beforeEach(async () => {
     const app: TestingModule = await Test.createTestingModule({
@@ -82,7 +77,7 @@ describe('AppController', () => {
       expect(controller.healthcheck()).toBe('TOFU Workspace Core is up');
     });
 
-    it('create()', async () => {            
+    it('create()', async () => {
       const request: WorkspaceCreateObject = {
         admin: {
           id: uuid(),
@@ -90,27 +85,27 @@ describe('AppController', () => {
           enabled: true,
           firstName: 'John',
           lastName: 'Smith',
-          email: 'john.smith@costono.com',          
+          email: 'john.smith@costono.com',
         },
-        name: 'test workspace (not repeat)'
-      }
+        name: 'test workspace (not repeat)',
+      };
       const result = await controller.create('abcdefgh', request);
       expect(result).toBeDefined();
     });
 
-    it('get', async() => {
+    it('get', async () => {
       expect(controller.get(uuid(), uuid())).resolves.toBeDefined();
     });
 
-    it('remove', async() => {
+    it('remove', async () => {
       expect(controller.remove(uuid(), uuid())).resolves.toBeUndefined();
-    })
+    });
 
-    it('update()', async() => {
+    it('update()', async () => {
       const request: WorkspaceUpdateObject = {
         name: 'some newer name',
       };
       expect(controller.update(uuid(), uuid(), request)).resolves.toBeDefined();
-    })
+    });
   });
 });

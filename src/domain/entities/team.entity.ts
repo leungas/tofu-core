@@ -26,7 +26,7 @@ export class Team {
     example: uuid(),
     readOnly: true,
   })
-  id: string;
+  id?: string;
 
   /**
    * @property

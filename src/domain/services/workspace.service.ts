@@ -138,9 +138,27 @@ export class WorkspaceService {
     this.logger.debug(`remove(): Enter`);
     this.logger.debug(`remove(): $account = ${account}`);
     this.logger.debug(`remove(): $workspace = ${workspace}`);
-    const entity = await this.get(account,workspace);
+    const entity = await this.get(account, workspace);
     if (!entity) throw new NotFoundException();
     await this.workspaces.remove(entity);
+  }
+
+  /**
+   * @async
+   * @method search
+   * @description Searching the available workspaces
+   * @param account {string} the account ID relevant for scoping search
+   * @param filter {FindManyOptions} the search filter
+   * @returns {Promise<Workspace[]>}
+   */
+  async search(account: string, filter: FindManyOptions<WorkspaceModel>) {
+    this.logger.debug(`search(): Enter`);
+    this.logger.debug(`search(): $account = ${account}`);
+    this.logger.debug(`search(): $filter = ${JSON.stringify(filter)}`);
+    filter.relations = ['accounts'];
+    filter.where = Object.assign(filter.where, { account: { id: account } });
+    const result = await this.workspaces.search(filter);
+    return result.map((i) => this.convert(i));
   }
 
   /**

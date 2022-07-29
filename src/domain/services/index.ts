@@ -1,5 +1,6 @@
 import { CapabilityService } from './capability.service';
 import { SystemService } from './system.service';
+import { TeamService } from './team.service';
 import { WorkspaceService } from './workspace.service';
 
 /**
@@ -7,4 +8,9 @@ import { WorkspaceService } from './workspace.service';
  * @description The services available in business logic
  * @author Mark Leung <leungas@gmail.com>
  */
-export const services = [SystemService, CapabilityService, WorkspaceService];
+export const services = [
+  SystemService,
+  CapabilityService,
+  TeamService,
+  WorkspaceService,
+];
