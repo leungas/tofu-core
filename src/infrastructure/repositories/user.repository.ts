@@ -1,6 +1,6 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectEntityManager } from '@nestjs/typeorm';
-import { User } from 'src/domain/entities/user.entity';
+import { User } from '../../domain/entities/user.entity';
 import { EntityManager } from 'typeorm';
 import { UserModel } from '../models/user.model';
 

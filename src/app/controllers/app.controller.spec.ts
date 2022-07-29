@@ -10,6 +10,9 @@ import { WorkspaceCreateObject } from '../dto/workspace.create.dto';
 import { WorkspaceUpdateObject } from '../dto/workspace.update.dto';
 import { AccountModel } from '../../infrastructure/models/account.model.';
 import { SystemTeamModel } from '../../infrastructure/models/system-team.model';
+import { TeamService } from '../../domain/services/team.service';
+import { TeamModelRepository } from '../../infrastructure/repositories/team.repository';
+import { UserModelRepository } from '../../infrastructure/repositories/user.repository';
 
 describe('AppController', () => {
   let controller: AppController;
@@ -39,9 +42,7 @@ describe('AppController', () => {
           else return Promise.resolve({ id: uuid() });
       }
     }),
-    remove: jest
-      .fn()
-      .mockImplementation(() => Promise.resolve(undefined)),
+    remove: jest.fn().mockImplementation(() => Promise.resolve(undefined)),
     save: jest.fn().mockImplementation((entities) => {
       if (Array.isArray(entities)) {
         return Promise.resolve(
@@ -59,9 +60,12 @@ describe('AppController', () => {
       controllers: [AppController],
       providers: [
         SystemService,
+        TeamService,
         WorkspaceService,
         AccountModelRepository,
         WorkspaceModelRepository,
+        TeamModelRepository,
+        UserModelRepository,
         {
           provide: EntityManager,
           useValue: mockEntityManager,
