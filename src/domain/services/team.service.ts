@@ -13,6 +13,7 @@ import { FindManyOptions } from 'typeorm';
 import { Member } from '../entities/member.entity';
 import { Team } from '../entities/team.entity';
 import { User } from '../entities/user.entity';
+import { TeamUpdateObject } from 'src/app/dto/team.update.dto';
 
 /**
  * @class
@@ -91,7 +92,7 @@ export class TeamService {
       },
     });
     this.logger.debug(`create(): $parent = ${JSON.stringify(parent)}`);
-    if (parent.length > 0) throw new PreconditionFailedException();
+    if (parent.length === 0) throw new PreconditionFailedException();
     if (request.members.length > 0) {
       const members = await Promise.all(
         request.members.map(async (m) => {
@@ -173,6 +174,7 @@ export class TeamService {
       },
     };
     const results = await this.teams.search(filter);
+    console.log(`search(): $results = ${JSON.stringify(results)}`);
     return results.map((i) => this.convert(i));
   }
 
@@ -186,7 +188,12 @@ export class TeamService {
    * @param request {TeamUpdateObject} the request for updating
    * @returns {Promise<Team>}
    */
-  async update(account: string, workspace: string, team: string, request) {
+  async update(
+    account: string,
+    workspace: string,
+    team: string,
+    request: TeamUpdateObject,
+  ) {
     this.logger.debug(`update(): Enter`);
     this.logger.debug(`update(): $account = ${account}`);
     this.logger.debug(`update(): $workspace = ${workspace}`);
