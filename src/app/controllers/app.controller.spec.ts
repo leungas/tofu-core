@@ -15,6 +15,7 @@ import { TeamModelRepository } from '../../infrastructure/repositories/team.repo
 import { UserModelRepository } from '../../infrastructure/repositories/user.repository';
 import { TeamModel } from '../../infrastructure/models/team.model';
 import { WorkspaceModel } from '../../infrastructure/models/workspace.model';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 describe('AppController', () => {
   let controller: AppController;
@@ -104,6 +105,7 @@ describe('AppController', () => {
     const app: TestingModule = await Test.createTestingModule({
       controllers: [AppController],
       providers: [
+        EventEmitter2,
         SystemService,
         TeamService,
         WorkspaceService,
