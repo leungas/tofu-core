@@ -1,5 +1,6 @@
 import { Logger, Module, OnApplicationBootstrap } from '@nestjs/common';
 import { InfrastructureModule } from 'src/infrastructure/infrastructure.module';
+import { handlers } from './handlers';
 import { services } from './services';
 import { CapabilityService } from './services/capability.service';
 
@@ -10,7 +11,7 @@ import { CapabilityService } from './services/capability.service';
  */
 @Module({
   imports: [InfrastructureModule],
-  providers: [...services],
+  providers: [...services, ...handlers],
   exports: [...services],
 })
 export class DomainModule implements OnApplicationBootstrap {
