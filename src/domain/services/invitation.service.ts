@@ -1,4 +1,9 @@
-import { Injectable, Logger, NotFoundException, PreconditionFailedException } from '@nestjs/common';
+import {
+  Injectable,
+  Logger,
+  NotFoundException,
+  PreconditionFailedException,
+} from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { InvitationConsumeObject } from 'src/app/dto/invitation.consume.dto';
 import { InvitationCreateObject } from 'src/app/dto/invitation.create.dto';
@@ -64,14 +69,15 @@ export class InvitationService {
     this.logger.debug(`consume(): $id = ${id}`);
     this.logger.debug(`consume(): $request = ${JSON.stringify(request)}`);
     const invitation = await this.repository.get(id);
-    if (invitation.activationCode !== request.activationCode) 
-        throw new PreconditionFailedException();
+    if (invitation.activationCode !== request.activationCode)
+      throw new PreconditionFailedException();
     const user = Object.assign(invitation.linkedUser, request);
     const result = await this.repository.consume(invitation, user);
-    await this.emitter.emitAsync('user.provisioned', new UserProvisionedEvent(user));
+    await this.emitter.emitAsync(
+      'user.provisioned',
+      new UserProvisionedEvent(user),
+    );
     return result;
-
-
   }
 
   /**
@@ -98,10 +104,10 @@ export class InvitationService {
   async list() {
     this.logger.debug(`create(): Enter`);
     const filter: FindManyOptions<InvitiationModel> = {
-        where: {
-            consumedOn: Not(IsNull()),
-        }
-    }
+      where: {
+        consumedOn: Not(IsNull()),
+      },
+    };
     const result = await this.repository.search(filter);
     return result.map((i) => this.convert(i));
   }

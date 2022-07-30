@@ -1,4 +1,4 @@
-import { User } from "../entities/user.entity";
+import { User } from '../entities/user.entity';
 
 /**
  * @event UserProvisionedEvent
@@ -6,11 +6,9 @@ import { User } from "../entities/user.entity";
  * @author Mark Leung <leungas@gmail.com>
  */
 export class UserProvisionedEvent {
-    /**
-     * @constructor
-     * @param user {User} the user provisioned and activated
-     */
-    constructor(
-        public readonly user: User
-    ) {}
+  /**
+   * @constructor
+   * @param user {User} the user provisioned and activated
+   */
+  constructor(public readonly user: User) {}
 }

@@ -33,7 +33,9 @@ export class Invitation {
    * @description The activation code to use for the invitation
    * @type {string}
    */
-  @Field(() => String, {description: 'The activation code to use the invitation'})
+  @Field(() => String, {
+    description: 'The activation code to use the invitation',
+  })
   @ApiProperty({
     name: 'activationCode',
     description: 'The activation code to use for the invitation',
@@ -116,5 +118,5 @@ export class Invitation {
     example: new Date().toISOString(),
     readOnly: true,
   })
-  lastUpdatedOn?: Date;  
+  lastUpdatedOn?: Date;
 }
