@@ -48,5 +48,10 @@ exchange:
       name: account.core.tofu
       capability:
         register: app.capability.register	
+    users:
+      name: user.core.tofu
+      user:
+        provisioned: workspaces.user.provisioned
+
 
         
