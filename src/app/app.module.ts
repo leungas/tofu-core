@@ -5,6 +5,7 @@ import { InfrastructureModule } from 'src/infrastructure/infrastructure.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import configuration from 'src/infrastructure/config/configuration';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 
 /**
  * @module AppModule
@@ -18,6 +19,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       isGlobal: true,
     }),
     DomainModule,
+    EventEmitterModule.forRoot(),
     InfrastructureModule,
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],

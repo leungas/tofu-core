@@ -19,7 +19,10 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "migration": "yarn typeorm migration:run",
+    "migration:create": "yarn run typeorm migration:create -d src/migrations -n tofu-workspaces",
+    "migration:revert": "yarn run typeorm migration:revert"
   },
   "dependencies": {
     "@golevelup/nestjs-rabbitmq": "^2.4.0",
@@ -45,6 +48,7 @@
     "typeorm": "^0.3.7"
   },
   "devDependencies": {
+    "@golevelup/ts-jest": "^0.3.3",
     "@nestjs/cli": "^8.0.0",
     "@nestjs/schematics": "^8.0.0",
     "@nestjs/testing": "^8.0.0",
@@ -83,6 +87,13 @@
     "collectCoverageFrom": [
       "**/*.(t|j)s"
     ],
+    "coveragePathIgnorePatterns": [
+      "module.ts",
+      "index.ts",
+      "configuration.ts",
+      "main.ts",
+      "config.ts"
+    ],    
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
   }

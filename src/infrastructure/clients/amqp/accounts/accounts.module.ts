@@ -1,6 +1,7 @@
 import { RabbitMQModule } from '@golevelup/nestjs-rabbitmq';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { AccountServiceConsumer } from './account.consumer';
 import { AccountServiceProducer } from './account.producer';
 
 /**
@@ -15,8 +16,7 @@ import { AccountServiceProducer } from './account.producer';
       inject: [ConfigService],
       useFactory: (config: ConfigService) => {
         const exchange = config.get('exchange');
-        console.log(exchange);
-        const name = config.get('exchange.exchanges.account.name');
+        const name = config.get('exchange.exchanges.accounts.name');
         return {
           exchanges: [
             {
@@ -30,7 +30,7 @@ import { AccountServiceProducer } from './account.producer';
       },
     }),
   ],
-  providers: [AccountServiceProducer],
+  providers: [AccountServiceProducer, AccountServiceConsumer],
   exports: [AccountServiceProducer],
 })
 export class AccountsModule {}

@@ -1,3 +1,4 @@
+import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
@@ -9,13 +10,23 @@ import { AppModule } from './app/app.module';
  * @author Mark Leung <leungas@gmail.com>
  */
 async function bootstrap() {
+  // loading the application
   const app = await NestFactory.create(AppModule);
 
-  // loading the config
+  // loading config set
   const config = app.get(ConfigService);
+  const env = config.get('app.env');
+
+  // enforcing pipes
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true,
+      skipMissingProperties: true,
+      // forbidUnknownValues: true,
+    }),
+  );
 
   // loading the swagger component
-  const env = config.get('app.env');
   if (env === 'local' || env === 'debug') {
     const swagger = new DocumentBuilder()
       .setTitle('TOFU Workspace Core')
