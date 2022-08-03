@@ -43,7 +43,7 @@ stages:
             displayName: 'Installing Postgres'
             name: BuildAssets
             inputs:
-              azureSubscription: $(azureSubscription)
+              azureSubscription: $(variables.azureSubscription)
               scriptType: ps
               scriptLocation: inlineScript
               inlineScript: |
@@ -58,7 +58,7 @@ stages:
             displayName: 'Loading Scripted Data'
             name: LoadAssets
             inputs:
-              azureSubscription: $(azureSubscription)
+              azureSubscription: $(variables.azureSubscription)
               scriptType: ps
               scriptLocation: inlineScript
               inlineScript: |
@@ -86,7 +86,7 @@ stages:
           - task: AzureCLI@2
             displayName: "Dismental environment"
             inputs: 
-              azureSubscription: $(variablesazureSubscription)
+              azureSubscription: $(variables.azureSubscription)
               scriptType: ps
               scriptLocation: inlineScript
               inlineScript: |
