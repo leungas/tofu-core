@@ -46,7 +46,7 @@ jobs:
         with:
           inlineScript: |
             az group create --name rg-eas-tofu-test --location eastasia
-            az deployment group create -n create-db -g rg-eas-tofu-test -f test/arm/postgres.arm.json -p test/arm/postgres.input.json > output.json
+            az deployment group create -n create-db -g rg-eas-tofu-test -f test/arms/postgres.arm.json -p test/arms/postgres.input.json > output.json
 
       - name: Capture DB name data
         run: |
