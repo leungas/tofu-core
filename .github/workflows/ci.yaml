@@ -94,7 +94,7 @@ jobs:
         run: |
           env
           yarn install
-          yarn test
+          yarn test:e2e
       
       - name: Run build test
         run: 
