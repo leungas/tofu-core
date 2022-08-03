@@ -5,6 +5,7 @@ on:
     types:
       - opened
       - reopened
+      - synchronize
     branches:
       - master
 
@@ -40,6 +41,9 @@ jobs:
         with:
           input: ./test/arms/postgres.value.json
           output: ./test/arms/postgres.input.json
+
+      - name: Loading out param file
+        run: cat test/arms/postgres.input.json
 
       - name: Create resource group
         uses: azure/CLI@v1
@@ -77,14 +81,14 @@ jobs:
           POSTGRES_HOST: ${{ env.DB_SERVER_NAME }}.postgres.database.azure.com
           POSTGRES_SECRET: ${{ steps.postgres-pwd.outputs.password }}
         with:
-          input: ./src/infrastructure/config/app.template.yaml
+          input: ./src/infrastructure/config/e2e.template.yaml
           output: ./src/infrastructure/config/e2e.config.yaml
 
       - name: Run tests
         env:
           ENV_APP_CONFIG: 'infrastructure/config/e2e.config.yaml'
         run: |
-          cat src/infrastructure/config/e2e.config.yaml
+          env
           yarn install
           yarn build
           yarn test:e2e
@@ -104,3 +108,9 @@ jobs:
         with:
           inlineScript:
             az group delete --name rg-eas-tofu-test
+
+
+
+
+
+  
