@@ -9,6 +9,9 @@ on:
     branches:
       - master
 
+env: 
+  DB_SECRET: Ar1iMEkTcHoKV7VLl1ywsiZrvuTh8LQR
+
 jobs:
   validate:
     runs-on: ubuntu-latest
@@ -37,7 +40,7 @@ jobs:
       - name: Get our param file
         uses: danielr1996/envsubst-action@1.0.0
         env:
-          DB_SECRET: ${{ steps.postgres-pwd.outputs.password }}
+          DB_SECRET: ${{ env.DB_SECRET }}
         with:
           input: ./test/arms/postgres.value.json
           output: ./test/arms/postgres.input.json
@@ -71,7 +74,7 @@ jobs:
         uses: azure/postgresql@v1
         continue-on-error: true
         with:
-          connection-string: "host=${{ env.DB_SERVER_NAME }}.postgres.database.azure.com port=5432 dbname=postgres user=postgres@${{ env.DB_SERVER_NAME }} password=${{ steps.postgres-pwd.outputs.password }} sslmode=require"
+          connection-string: "host=${{ env.DB_SERVER_NAME }}.postgres.database.azure.com port=5432 dbname=postgres user=postgres@${{ env.DB_SERVER_NAME }} password=${{ env.DB_SECRET }} sslmode=require"
           server-name: ${{ env.DB_SERVER_NAME }}
           plsql-file: "test/arm/create-db.sql"
 
@@ -80,7 +83,7 @@ jobs:
         env:
           POSTGRES_HOST: ${{ env.DB_SERVER_NAME }}.postgres.database.azure.com
           POSTGRES_USER: postgres@${{ env.DB_SERVER_NAME }}
-          POSTGRES_SECRET: ${{ steps.postgres-pwd.outputs.password }}
+          POSTGRES_SECRET: ${{ env.DB_SECRET }}
         with:
           input: ./src/infrastructure/config/e2e.template.yaml
           output: ./src/infrastructure/config/e2e.config.yaml
