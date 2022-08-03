@@ -42,10 +42,13 @@ jobs:
           input: ./test/arms/postgres.value.json
           output: ./test/arms/postgres.input.json
 
+      - name: Loading out param file
+        run: cat test/arms/postgres.input.json
+
       - name: Create resource group
         uses: azure/CLI@v1
         with:
-          inlineScript: |
+          inlineScript: |            
             az group create --name rg-eas-tofu-test --location eastasia
             az deployment group create -n create-db -g rg-eas-tofu-test -f test/arms/postgres.arm.json -p test/arms/postgres.input.json > output.json
 

@@ -44,7 +44,7 @@ describe('AppController (e2e)', () => {
         const data = response.body;
         workspace = Reflect.get(data, 'id');
       });
-  });  
+  });
 
   it('/workspace (PUT)', () => {
     return request(app.getHttpServer())
