@@ -94,7 +94,6 @@ jobs:
         run: |
           env
           yarn install
-          yarn build
           yarn test
       
       - name: Run build test

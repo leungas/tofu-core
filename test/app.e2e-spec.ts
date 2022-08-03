@@ -30,5 +30,5 @@ describe('AppController (e2e)', () => {
       .get('/')
       .expect(200)
       .expect('TOFU Workspace Core is up');
-  }, 500000);
+  });
 });
