@@ -6,6 +6,16 @@ pool:
 
   variables:
   - group: tofu-variables
+  - name: dockerRegistryServiceConnection
+    value: 'e0fb0a64-0255-45fe-8a29-eb75fb067e4d'
+  - name: imageRepository
+    value: 'tofuaccounts'
+  - name: containerRegistry
+    value: 'acrtofu.azurecr.io'
+  - name: dockerfilePath
+    value: '**/Dockerfile'
+  - name: tag
+    value: '$(Build.BuildId)'
         
 stages:
   - stage: Builder
@@ -93,14 +103,10 @@ stages:
                 az group delete $(resouceGroup)
 
           - task: Docker@2
-            inputs:
-              command: login
-              containerRegistry: 'acrtofu.azurecr.io'
-
-          - task: Docker@2
+            displayName: "Build and Push"
             inputs:
               command: buildAndPush
-              repository: 'acrtofu'
-              tags: |
-                $(Build.BuildId)
-                latest                
+              repository: $(imageRepository)
+              dockerfile: $(dockerfilePath)
+              containerRegistry: $(dockerRegistryServiceConnection)
+              tags: $(tag)               
