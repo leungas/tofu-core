@@ -76,7 +76,7 @@ jobs:
         with:
           connection-string: "host=${{ env.DB_SERVER_NAME }}.postgres.database.azure.com port=5432 dbname=postgres user=postgres@${{ env.DB_SERVER_NAME }} password=${{ env.DB_SECRET }} sslmode=require"
           server-name: ${{ env.DB_SERVER_NAME }}
-          plsql-file: "test/arm/create-db.sql"
+          plsql-file: "test/arms/create-db.sql"
 
       - name: Get our param file
         uses: danielr1996/envsubst-action@1.0.0
