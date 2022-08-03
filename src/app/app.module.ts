@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './controllers/app.controller';
 import { DomainModule } from '../domain/domain.module';
-import { InfrastructureModule } from 'src/infrastructure/infrastructure.module';
+import { InfrastructureModule } from '../infrastructure/infrastructure.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import configuration from 'src/infrastructure/config/configuration';
+import configuration from '../infrastructure/config/configuration';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 
@@ -26,6 +26,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
       inject: [ConfigService],
       useFactory: (config: ConfigService) => {
         const result = { ...config.get('datasource') };
+        console.log(result);
         return result;
       },
     }),

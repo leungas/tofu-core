@@ -24,5 +24,4 @@ describe('AppController (e2e)', () => {
       .expect(200)
       .expect('TOFU Workspace Core is up');
   });
-
 });

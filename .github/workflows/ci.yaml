@@ -5,6 +5,7 @@ on:
     types:
       - opened
       - reopened
+      - synchronize
     branches:
       - master
 
@@ -80,7 +81,7 @@ jobs:
           POSTGRES_HOST: ${{ env.DB_SERVER_NAME }}.postgres.database.azure.com
           POSTGRES_SECRET: ${{ steps.postgres-pwd.outputs.password }}
         with:
-          input: ./src/infrastructure/config/app.template.yaml
+          input: ./src/infrastructure/config/e2e.template.yaml
           output: ./src/infrastructure/config/e2e.config.yaml
 
       - name: Run tests
