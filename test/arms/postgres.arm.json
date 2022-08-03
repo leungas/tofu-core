@@ -1,0 +1,88 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "application": {
+            "type": "string",
+            "metadata": {
+                "description": "The application this template is for"
+            }
+        },
+        "db-secret": {
+            "type": "string",
+            "metadata": {
+                "description": "The secret applicable for Postgres Admin"
+            }
+        }
+    },
+    "variables": {
+        "pdbEntityName": "[concat('pdb-', parameters('application'), '-tofu-test')]",
+        "pdbEntitySku": "GP_Gen5_2",
+        "pdbEntitySkuCap": 2,
+        "pdbEntitySkuFamily": "Gen5",
+        "pdbEntitySkuStorage": 5120,
+        "pdbEntitySkuTier": "GeneralPurpose"
+    },
+    "resources": [
+        {
+            "type": "Microsoft.DBForPostgreSQL/servers",
+            "name": "[variables('pdbEntityName')]",
+            "apiVersion": "2017-12-01",
+            "location": "[resourceGroup().location]",
+            "sku": {
+                "name": "[variables('pdbEntitySku')]",
+                "tier": "[variables('pdbEntitySkuTier')]",
+                "capacity": "[variables('pdbEntitySkuCap')]",
+                "size": "[variables('pdbEntitySkuStorage')]",
+                "family": "[variables('pdbEntitySkuFamily')]"
+            },
+            "tags": {
+                "app": "[parameters('application')]",
+                "env": "test"
+            },
+            "properties": {
+                "createMode": "Default",
+                "version": "11",
+                "administratorLogin": "postgres",
+                "administratorLoginPassword": "[parameters('db-secret')]",
+                "storageProfile": {
+                    "storageMB": "[variables('pdbEntitySkuStorage')]",
+                    "storageAutogrow": "Disabled"
+                }
+            }, 
+            "resources": [
+                {
+                    "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+                    "apiVersion": "2017-12-01",
+                    "name": "[concat(variables('pdbEntityName'), '/azure.replication_support')]",
+                    "dependsOn": [
+                        "[resourceId('Microsoft.DBforPostgreSQL/servers', variables('pdbEntityName'))]"
+                    ],
+                    "properties": {
+                        "value": "REPLICA",
+                        "source": "user-override"
+                    }
+                }
+            ]
+        }
+    ],
+    "outputs": {
+        "pdbEntityName": {
+            "type": "string",
+            "value": "[variables('pdbEntityName')]"
+        },
+        "pdbConnectionString": {
+            "type": "string",
+            "value": "[concat(
+                'host=', variables('pdbEntityName'), 
+                '-pgserver.postgres.database.azure.com port=5432 dbname=postgres user=postgres@', variables('pdbEntityName'), 
+                ' password=', parameters('db-secret'),
+                'sslmode=require'
+            )]"            
+        },
+        "db-secret": {
+            "type": "string",
+            "value": "[parameters('db-secret')]"
+        }
+    }
+}
