@@ -1,8 +1,10 @@
 import { Module } from '@nestjs/common';
 import { AccountsModule } from './accounts/accounts.module';
+import { UsersModule } from './users/users.module';
+import { AccessModule } from './access/access.module';
 
 @Module({
-  imports: [AccountsModule],
+  imports: [AccountsModule, UsersModule, AccessModule],
   exports: [AccountsModule],
 })
 export class AmqpModule {}

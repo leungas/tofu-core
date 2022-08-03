@@ -1,4 +1,5 @@
 import { AccountModel } from './account.model.';
+import { InvitiationModel } from './invitation.model';
 import { MemberModel } from './member.model';
 import { SystemTeamModel } from './system-team.model';
 import { TeamModel } from './team.model';
@@ -12,6 +13,7 @@ import { WorkspaceModel } from './workspace.model';
  */
 export const models = [
   AccountModel,
+  InvitiationModel,
   MemberModel,
   SystemTeamModel,
   TeamModel,

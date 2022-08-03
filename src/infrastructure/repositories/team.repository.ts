@@ -166,10 +166,12 @@ export class TeamModelRepository {
    * @param filter {FindManyOption<TeamModel>}
    * @returns {Promise<TeamModel[]>}
    */
-  search(filter: FindManyOptions<TeamModel>) {
+  async search(filter: FindManyOptions<TeamModel>) {
     this.logger.debug(`search(): Enter`);
     this.logger.debug(`search(): $filter = ${JSON.stringify(filter)}`);
-    return this.client.find(TeamModel, filter);
+    const result = await this.client.find(TeamModel, filter);
+    this.logger.debug(`search(): $result = ${JSON.stringify(result)}`);
+    return result;
   }
 
   /**

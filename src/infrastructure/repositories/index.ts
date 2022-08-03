@@ -1,4 +1,5 @@
 import { AccountModelRepository } from './account.repository';
+import { InvitationModelRepository } from './invitation.repository';
 import { TeamModelRepository } from './team.repository';
 import { UserModelRepository } from './user.repository';
 import { WorkspaceModelRepository } from './workspace.repository';
@@ -10,6 +11,7 @@ import { WorkspaceModelRepository } from './workspace.repository';
  */
 export const repositories = [
   AccountModelRepository,
+  InvitationModelRepository,
   TeamModelRepository,
   UserModelRepository,
   WorkspaceModelRepository,

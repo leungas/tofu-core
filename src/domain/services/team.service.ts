@@ -13,11 +13,18 @@ import { FindManyOptions } from 'typeorm';
 import { Member } from '../entities/member.entity';
 import { Team } from '../entities/team.entity';
 import { User } from '../entities/user.entity';
+import { TeamUpdateObject } from 'src/app/dto/team.update.dto';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { TeamCreatedEvent } from '../events/team.created.event';
+import { TeamRemovedEvent } from '../events/team.remove.event';
+import { TeamAssignObject } from 'src/app/dto/team.assign.dto';
+import { TeamReassignedEvent } from '../events/team.reassigned.event';
 
 /**
  * @class
  * @name TeamService
  * @description the business logic layer for team related matters
+ * @author Mark Leung <leungas@gmail.com>
  */
 @Injectable()
 export class TeamService {
@@ -40,10 +47,33 @@ export class TeamService {
    * @param workspaces {WorkspaceModelRepository} the workspace data access
    */
   constructor(
+    private readonly emitter: EventEmitter2,
     private readonly teams: TeamModelRepository,
     private readonly users: UserModelRepository,
     private readonly workspaces: WorkspaceModelRepository,
   ) {}
+
+  /**
+   * @async
+   * @method assign
+   * @description The request to assign member inter-change of a team
+   * @param request {TeamAssignObject} the team structure data
+   * @returns {Promise<Team>}
+   */
+  async assign(id: string, request: TeamAssignObject) {
+    this.logger.debug(`assign(): Enter`);
+    this.logger.debug(`assign(): $id = ${id}`);
+    this.logger.debug(`assign(): $request = ${JSON.stringify(request)}`);
+    const team = await this.teams.get(id);
+    if (!team) throw new NotFoundException();
+    const result = await this.teams.assign(
+      team,
+      request.members.map((i) => Object.assign(new User(), i)),
+    );
+    const event = new TeamReassignedEvent(result);
+    await this.emitter.emitAsync('workspaces.team.reassigned', event);
+    return result;
+  }
 
   /**
    * @method convert
@@ -91,7 +121,7 @@ export class TeamService {
       },
     });
     this.logger.debug(`create(): $parent = ${JSON.stringify(parent)}`);
-    if (parent.length > 0) throw new PreconditionFailedException();
+    if (parent.length === 0) throw new PreconditionFailedException();
     if (request.members.length > 0) {
       const members = await Promise.all(
         request.members.map(async (m) => {
@@ -103,9 +133,10 @@ export class TeamService {
       request = Object.assign(request, { members: members });
     }
     const entity = this.convert(request);
-    this.logger.debug(`create(): $parent = ${JSON.stringify(parent)}`);
     const result = await this.teams.create(entity, parent[0], entity.members);
     this.logger.debug(`create(): $parent = ${JSON.stringify(parent)}`);
+    const event = new TeamCreatedEvent(result);
+    await this.emitter.emitAsync('workspaces.team.created', event);
     return this.convert(result);
   }
 
@@ -137,6 +168,28 @@ export class TeamService {
 
   /**
    * @async
+   * @method list
+   * @description Getting the list of teams belong with a workspace
+   * @param account {string} the Account ID
+   * @param workspace {string} the workspace ID
+   * @returns {Promise<Team[]>}
+   */
+  async list(account: string, workspace: string) {
+    this.logger.debug(`list(): Enter`);
+    this.logger.debug(`list(): $account = ${account}`);
+    this.logger.debug(`list(): $workspace = ${workspace}`);
+    const filter: FindManyOptions<TeamModel> = {
+      relations: ['owner'],
+      where: {
+        owner: { id: workspace },
+      },
+    };
+    const teams = await this.teams.search(filter);
+    return teams.map((i) => this.convert(i));
+  }
+
+  /**
+   * @async
    * @method remove
    * @description Removing an existing team
    * @param account {string} the ID fo the account for the workspace
@@ -151,6 +204,8 @@ export class TeamService {
     this.logger.debug(`remove(): $team = ${team}`);
     const entity = await this.get(account, workspace, team);
     if (!entity) throw new NotFoundException();
+    const event = new TeamRemovedEvent(entity);
+    await this.emitter.emitAsync('workspaces.team.removed', event);
     return this.teams.remove(entity);
   }
 
@@ -173,6 +228,7 @@ export class TeamService {
       },
     };
     const results = await this.teams.search(filter);
+    console.log(`search(): $results = ${JSON.stringify(results)}`);
     return results.map((i) => this.convert(i));
   }
 
@@ -186,7 +242,12 @@ export class TeamService {
    * @param request {TeamUpdateObject} the request for updating
    * @returns {Promise<Team>}
    */
-  async update(account: string, workspace: string, team: string, request) {
+  async update(
+    account: string,
+    workspace: string,
+    team: string,
+    request: TeamUpdateObject,
+  ) {
     this.logger.debug(`update(): Enter`);
     this.logger.debug(`update(): $account = ${account}`);
     this.logger.debug(`update(): $workspace = ${workspace}`);

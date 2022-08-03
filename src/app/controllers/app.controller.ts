@@ -27,6 +27,7 @@ import { FindManyOptions } from 'typeorm';
 import { WorkspaceModel } from '../../infrastructure/models/workspace.model';
 import { TeamCreateObject } from '../dto/team.create.dto';
 import { TeamService } from '../../domain/services/team.service';
+import { TeamUpdateObject } from '../dto/team.update.dto';
 
 /**
  * @class
@@ -331,6 +332,81 @@ export class AppController {
     this.logger.debug(`register(): $workspace = ${workspace}`);
     this.logger.debug(`register(): $request = ${JSON.stringify(request)}`);
     return this.teams.create(account, workspace, request);
+  }
+
+  @Put('accounts/:account/workspaces/:workspace/teams/:team')
+  @HttpCode(HttpStatus.ACCEPTED)
+  @ApiTags('Teams')
+  @ApiOperation({
+    summary: 'Updating data for an existing team',
+    description:
+      'Update data for a team that is already defined, but it will not do any update on members',
+  })
+  @ApiParam({
+    name: 'account',
+    description: 'The account ID linked to workspace',
+    type: 'string',
+    example: uuid(),
+    required: true,
+  })
+  @ApiParam({
+    name: 'workspace',
+    description: 'The workspace ID linked to team',
+    type: 'string',
+    example: uuid(),
+    required: true,
+  })
+  @ApiParam({
+    name: 'team',
+    description: 'The team ID to update',
+    type: 'string',
+    example: uuid(),
+    required: true,
+  })
+  @ApiBody({})
+  @ApiResponse({
+    status: HttpStatus.ACCEPTED,
+    description: 'The request is successfully processed',
+  })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'User is not logged into the system',
+  })
+  @ApiResponse({
+    status: HttpStatus.FORBIDDEN,
+    description: 'User does not have rights to create new team',
+  })
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: 'Submitted request is invalid',
+  })
+  @ApiResponse({
+    status: HttpStatus.PRECONDITION_FAILED,
+    description: 'The required workspace is not available',
+  })
+  @ApiResponse({
+    status: HttpStatus.BAD_GATEWAY,
+    description: 'The service is not connected or unrearchable',
+  })
+  @ApiResponse({
+    status: HttpStatus.REQUEST_TIMEOUT,
+    description: 'The request took too long to process',
+  })
+  @ApiResponse({
+    status: HttpStatus.INTERNAL_SERVER_ERROR,
+    description: 'Problem with service, check logs for more details',
+  })
+  reregister(
+    @Param('account') account: string,
+    @Param('workspace') workspace: string,
+    @Param('team') team: string,
+    @Body() request: TeamUpdateObject,
+  ) {
+    this.logger.debug(`reregister(): Enter`);
+    this.logger.debug(`reregister(): $account = ${account}`);
+    this.logger.debug(`reregister(): $workspace = ${workspace}`);
+    this.logger.debug(`reregister(): $team = ${team}`);
+    return this.teams.update(account, workspace, team, request);
   }
 
   /**

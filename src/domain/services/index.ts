@@ -1,4 +1,5 @@
 import { CapabilityService } from './capability.service';
+import { InvitationService } from './invitation.service';
 import { SystemService } from './system.service';
 import { TeamService } from './team.service';
 import { WorkspaceService } from './workspace.service';

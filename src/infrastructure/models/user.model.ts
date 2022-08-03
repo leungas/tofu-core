@@ -3,12 +3,15 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   OneToMany,
+  OneToOne,
   PrimaryColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { MemberModel } from './member.model';
 import { WorkspaceModel } from './workspace.model';
+import { InvitiationModel } from './invitation.model';
 
 /**
  * @class
@@ -41,10 +44,16 @@ export class UserModel {
   @Column({ default: true })
   enabled: true;
 
-  @Column()
+  @Column({ nullable: true })
   firstName: string;
 
-  @Column()
+  @OneToOne(() => InvitiationModel, (invitation) => invitation.linkedUser, {
+    nullable: true,
+  })
+  @JoinColumn()
+  invitation: InvitiationModel;
+
+  @Column({ nullable: true })
   lastName: string;
 
   @UpdateDateColumn()

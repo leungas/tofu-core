@@ -7,12 +7,12 @@ import { repositories } from './repositories';
 @Module({
   imports: [
     // ClientsModule, #passivated for demo
-    TypeOrmModule.forFeature(models)
+    TypeOrmModule.forFeature(models),
   ],
   providers: [...repositories],
   exports: [
     // ClientsModule, # passivated for demo
-    ...repositories
+    ...repositories,
   ],
 })
 export class InfrastructureModule {}

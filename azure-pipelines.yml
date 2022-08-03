@@ -4,15 +4,23 @@ pr:
 pool:
   vmImage: ubuntu-latest
 
-stages:
-  - stage: CI
-    variables: 
-      - group: tofu-variables
-      - name: postgres
-        value: 'tofu-workspace-test'
+  variables:
+  - group: tofu-variables
+  - name: dockerRegistryServiceConnection
+    value: 'e0fb0a64-0255-45fe-8a29-eb75fb067e4d'
+  - name: imageRepository
+    value: 'tofuaccounts'
+  - name: containerRegistry
+    value: 'acrtofu.azurecr.io'
+  - name: dockerfilePath
+    value: '**/Dockerfile'
+  - name: tag
+    value: '$(Build.BuildId)'
         
-    jobs: 
-      - job: Test
+stages:
+  - stage: Builder
+    jobs:
+      - job: build  
         steps:
           - task: Bash@3
             displayName: 'Collecting IP of the runner'
@@ -35,7 +43,7 @@ stages:
           - task: Bash@3
             displayName: 'Preparing the working ARM template for deployment'
             env:
-              DB_SECRET: ${PwdGenerator.pgsecret}
+              DB_SECRET: $(secret)
             inputs:
               targetType: inline
               script: |
@@ -45,7 +53,7 @@ stages:
             displayName: 'Installing Postgres'
             name: BuildAssets
             inputs:
-              azureSubscription: ${variables.azureSubscription}
+              azureSubscription: 'MyARMConnection'
               scriptType: ps
               scriptLocation: inlineScript
               inlineScript: |
@@ -60,13 +68,13 @@ stages:
             displayName: 'Loading Scripted Data'
             name: LoadAssets
             inputs:
-              azureSubscription: ${variables.azureSubscription}
+              azureSubscription: 'MyARMConnection'
               scriptType: ps
               scriptLocation: inlineScript
               inlineScript: |
                 az login --allow-no-subscription
-                az postgres flexible-server execute --name ${BuildAssets.postgresName} \
-                --admin-user postgres --admin-password ${PwdGenerator.pgsecret} \
+                az postgres flexible-server execute --name $(postgresName) \
+                --admin-user postgres --admin-password $(secret) \
                 --database-name postgres --file-path /test/arm/create_db.sql
 
           - task: NodeTool@0
@@ -74,40 +82,31 @@ stages:
             inputs:
               versionSpec: '16.x'  
 
-          - displayName: 'Installing Dependencies and Test'
+          - task: Bash@3
+            displayName: "Running Tests"
             env:
-              ENV_APP_CONFIG: 'e2e.config.yaml'
-            script: |
-              yarn install
-              yarn build
-              yarn test:e2e    
+              DB_SECRET: $(secret)
+            inputs:
+              targetType: inline
+              script: |
+                yarn install
+                yarn build
+                yarn test:e2e    
 
           - task: AzureCLI@2
             displayName: "Dismental environment"
             inputs: 
-              azureSubscription: ${variables.azureSubscription}
+              azureSubscription: 'MyARMConnection'
               scriptType: ps
               scriptLocation: inlineScript
               inlineScript: |
-                az group delete ${BuildAssets.resourceGroup}
-
-  - stage: CD
-    jobs:
-      - job: Build
-        variables: 
-        - group: tofu-variables
-        steps:
-          - task: Docker@2
-            inputs:
-              command: login
-              containerRegistry: ${variables.azureRepoHost}
+                az group delete $(resouceGroup)
 
           - task: Docker@2
+            displayName: "Build and Push"
             inputs:
               command: buildAndPush
-              repository: ${variables.azureRegistryName}
-              tags: |
-                ${Build.BuildId}
-                latest
-
-                
+              repository: 'tofuworkspace'
+              dockerfile: '**/Dockerfile'
+              containerRegistry: 'e0fb0a64-0255-45fe-8a29-eb75fb067e4d'
+              tags: $(Build.BuildId)
