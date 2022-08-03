@@ -104,7 +104,7 @@ jobs:
       - name: Run scan
         uses: Azure/container-scan@v0
         with:
-          image-name: ${{ env.REGISTRY_NAME }}.azurecr.io/tofuworkspace:${{ github.sha }}
+          image-name: tofuworkspace:${{ github.sha }}
           severity-threshold: MEDIUM
 
       - name: Do dismental
