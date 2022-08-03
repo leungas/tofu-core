@@ -75,7 +75,7 @@ stages:
           - task: Bash@3
             displayName: "Running Tests"
             env:
-              DB_SECRET: ${{PwdGenerator.pgsecret}}
+              DB_SECRET: $(secret)
             inputs:
               targetType: inline
               script: |
