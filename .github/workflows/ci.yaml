@@ -4,6 +4,7 @@ on:
   pull_request:
     types:
       - opened
+      - reopened
     branches:
       - master
 
@@ -31,7 +32,7 @@ jobs:
       - name: Create Azure Env
         uses: azure/login@v1
         with:
-          creds: ${{secrets.AZURE_CREDS}}
+          creds: ${{secrets.AZURE_CRES}}
 
       - name: Get our param file
         uses: danielr1996/envsubst-action@1.0.0
