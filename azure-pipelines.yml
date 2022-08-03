@@ -8,7 +8,7 @@ pool:
   - group: tofu-variables
         
 stages:
-  - stage: 'Build and Test'    
+  - stage: Builder
     jobs:
       - job: build  
         steps:
