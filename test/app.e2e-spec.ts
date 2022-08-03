@@ -9,7 +9,7 @@ describe('AppController (e2e)', () => {
   let workspace: string;
   let team: string;
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
     }).compile();
