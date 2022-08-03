@@ -76,6 +76,7 @@ jobs:
         env:
           ENV_APP_CONFIG: 'infrastructure/config/e2e.config.yaml'
         run: 
+          env
           yarn install
           yarn test:e2e
       
