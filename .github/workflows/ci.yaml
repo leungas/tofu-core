@@ -38,8 +38,8 @@ jobs:
         env:
           DB_SECRET: ${{ steps.postgres-pwd.outputs.pg-secret }}
         with:
-          input: ./test/arm/postgres.value.json
-          output: ./test/arm/postgres.input.json
+          input: ./test/arms/postgres.value.json
+          output: ./test/arms/postgres.input.json
 
       - name: Create resource group
         uses: azure/CLI@v1
