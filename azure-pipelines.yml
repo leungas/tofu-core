@@ -92,12 +92,6 @@ stages:
               inlineScript: |
                 az group delete $(resouceGroup)
 
-  - stage: CD
-    jobs:
-      - job: Build
-        variables: 
-        - group: tofu-variables
-        steps:
           - task: Docker@2
             inputs:
               command: login
@@ -109,6 +103,7 @@ stages:
               repository: ${{variables.azureRegistryName}}
               tags: |
                 ${Build.BuildId}
-                latest
+                latest                
+      
 
                 
