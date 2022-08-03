@@ -39,15 +39,15 @@ jobs:
         env:
           DB_SECRET: ${{ steps.postgres-pwd.outputs.pg-secret }}
         with:
-          input: ./test/arm/postgres.value.json
-          output: ./test/arm/postgres.input.json
+          input: ./test/arms/postgres.value.json
+          output: ./test/arms/postgres.input.json
 
       - name: Create resource group
         uses: azure/CLI@v1
         with:
           inlineScript: |
             az group create --name rg-eas-tofu-test --location eastasia
-            az deployment group create -n create-db -g rg-eas-tofu-test -f test/arm/postgres.arm.json -p test/arm/postgres.input.json > output.json
+            az deployment group create -n create-db -g rg-eas-tofu-test -f test/arms/postgres.arm.json -p test/arms/postgres.input.json > output.json
 
       - name: Capture DB name data
         run: |
