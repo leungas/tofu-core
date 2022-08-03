@@ -1,4 +1,4 @@
-import { SystemTeamModel } from 'src/infrastructure/models/system-team.model';
+import { SystemTeamModel } from '../infrastructure/models/system-team.model';
 import { FindManyOptions, MigrationInterface, QueryRunner } from 'typeorm';
 
 /**
