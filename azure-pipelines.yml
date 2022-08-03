@@ -74,8 +74,7 @@ stages:
             inputs:
               versionSpec: '16.x'  
 
-          - displayName: 'Installing Dependencies and Test'
-            env:
+          - env:
               ENV_APP_CONFIG: 'e2e.config.yaml'
             script: |
               yarn install
