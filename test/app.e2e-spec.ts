@@ -29,7 +29,7 @@ describe('AppController (e2e)', () => {
       .expect(201)
       .expect((response) => {
         const data = response.body;
-        return data;        
-      })
-  })
+        return data;
+      });
+  });
 });
