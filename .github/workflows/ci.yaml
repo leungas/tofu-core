@@ -108,7 +108,7 @@ jobs:
         run: | 
           docker build \
             -t ${{ env.REPO_NAME }}.azurecr.io/tofu${{ env.APP_NAME }}:scan \            
-          docker push ${{ env.REPO_NAME }}.azurecr.io/${{ env.APP_NAME } --all-tags
+          docker push ${{ env.REPO_NAME }}.azurecr.io/${{ env.APP_NAME }} --all-tags
           
 
       - name: Run scan
