@@ -5,6 +5,8 @@ import { AppModule } from '../src/app/app.module';
 
 describe('AppController (e2e)', () => {
   let app: INestApplication;
+  let workspace: string;
+  let team: string;
 
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -22,14 +24,35 @@ describe('AppController (e2e)', () => {
       .expect('TOFU Workspace Core is up');
   });
 
-  it('/workspace (GET)', () => {
+  it('/workspace (POST)', () => {
     return request(app.getHttpServer())
       .post('')
       .send({})
       .expect(201)
       .expect((response) => {
         const data = response.body;
-        return data;
+        workspace = Reflect.get(data, 'id');
       });
   });
+
+  it('/workspace (PUT)', () => {
+    return request(app.getHttpServer())
+      .put(`/workspaces/${workspace}`)
+      .send({ name: 'Some newer name'})
+      .expect(202)
+      .expect((response) => {
+        const data = response.body;
+        return Reflect.get(data, 'name') === 'Some newer name';
+      })
+  });
+
+  it('/workspace (DELETE)', () => {
+    return request(app.getHttpServer())
+      .delete(`/workspaces/${workspace}`)
+      .expect(201)
+      .expect((response) => {
+        const data = response.body;
+        return data;
+      });
+  });  
 });
