@@ -37,6 +37,7 @@ datasource:
   synchronize: true
   type: postgres
   username: ${POSTGRES_USER}
+  ssl: true
 
 exchange:
   host: ${RABBITMQ_HOST}

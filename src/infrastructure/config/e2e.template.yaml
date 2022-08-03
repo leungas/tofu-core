@@ -26,7 +26,6 @@ auth:
   
 datasource:
   autoLoadEntities: true
-  schema: e2e
   database: tofu.core.workspace
   entities: ['infrastructure/**/*.model{.ts,.js}']
   host: ${POSTGRES_HOST}
@@ -37,6 +36,7 @@ datasource:
   port: 5432
   synchronize: true
   type: postgres
+  ssl: true
   username: ${POSTGRES_USER}
 
 exchange:
