@@ -21,4 +21,15 @@ describe('AppController (e2e)', () => {
       .expect(200)
       .expect('TOFU Workspace Core is up');
   });
+
+  it('/workspace (GET)', () => {
+    return request(app.getHttpServer())
+      .post('')
+      .send({})
+      .expect(201)
+      .expect((response) => {
+        const data = response.body;
+        return data;        
+      })
+  })
 });
