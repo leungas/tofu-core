@@ -74,12 +74,16 @@ stages:
             inputs:
               versionSpec: '16.x'  
 
-          - env:
-              ENV_APP_CONFIG: 'e2e.config.yaml'
-            script: |
-              yarn install
-              yarn build
-              yarn test:e2e    
+          - task: Bash@3
+            displayName: "Running Tests"
+            env:
+              DB_SECRET: ${PwdGenerator.pgsecret}
+            inputs:
+              targetType: inline
+              script: |
+                yarn install
+                yarn build
+                yarn test:e2e    
 
           - task: AzureCLI@2
             displayName: "Dismental environment"
