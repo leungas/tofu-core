@@ -106,7 +106,7 @@ stages:
             displayName: "Build and Push"
             inputs:
               command: buildAndPush
-              repository: $(imageRepository)
-              dockerfile: $(dockerfilePath)
-              containerRegistry: $(dockerRegistryServiceConnection)
-              tags: $(tag)               
+              repository: 'tofuworkspace'
+              dockerfile: '**/Dockerfile'
+              containerRegistry: 'e0fb0a64-0255-45fe-8a29-eb75fb067e4d'
+              tags: $(Build.BuildId)
