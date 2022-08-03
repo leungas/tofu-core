@@ -1,0 +1,1 @@
+CREATE DATABASE tofu.core.workspace;

@@ -2,7 +2,7 @@ import { Logger, Module, OnApplicationBootstrap } from '@nestjs/common';
 import { InfrastructureModule } from 'src/infrastructure/infrastructure.module';
 import { handlers } from './handlers';
 import { services } from './services';
-import { CapabilityService } from './services/capability.service';
+// import { CapabilityService } from './services/capability.service'; # passivated for demo
 
 /**
  * @module DomainModule
@@ -31,7 +31,7 @@ export class DomainModule implements OnApplicationBootstrap {
    * @constructor
    * @param capabilities {CapabilityService} the service for capabilities
    */
-  constructor(private readonly capabilities: CapabilityService) {}
+  // constructor() {} // private readonly capabilities: CapabilityService # passivated for demo
 
   /**
    * @async
@@ -41,6 +41,6 @@ export class DomainModule implements OnApplicationBootstrap {
    */
   async onApplicationBootstrap() {
     this.logger.debug('onApplicationBootstrap(): Enter');
-    await this.capabilities.sync();
+    // await this.capabilities.sync();
   }
 }

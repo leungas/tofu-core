@@ -1,0 +1,52 @@
+app:
+  capability:
+    - name: maxWorkspacePerAccount
+      description: "The number of workspace allowed per account"
+      system: true
+      value: 1
+  env: local
+  host: localhost
+  name: workspace.core.tofu
+  port: 3000
+  swagger: 
+    path: docs
+
+auth:
+  host: ${KEYCLOAK_HOST}
+  client: TOFU
+  realm: TOFU
+  secret: ${KEYCLOAK_SECRET}
+  oauth2:
+    authServerUrl: http://${auth.host}/auth
+    authroizationUrl: http://${auth.host}/auth/realms/${auth.realm}/protocol/openid-connect/auth
+    scopes:
+      profile: 'OpenID Connect built-in scope: profile'
+      email: 'OpenID Connect built-in scope: email'
+    redirectUrl: http://${app.host}:${app.port}
+  
+datasource:
+  autoLoadEntities: true
+  database: tofu.core.workspace
+  entities: ['dist/**/*.model{.ts,.js}']
+  host: ${POSTGRES_HOST}
+  migrations: ['dist/**/migrations/*{.ts,.js}']
+  migrationsRun: true
+  migrationsTableName: custom_migration_table
+  password: ${POSTGRES_SECRET}
+  port: 5432
+  synchronize: true
+  type: postgres
+  username: ${POSTGRES_USER}
+
+exchange:
+  host: ${RABBITMQ_HOST}
+  password: ${RABBITMQ_SECRET}
+  port: 5672
+  user: ${RABBITMQ_USER}
+  exchanges:
+    accounts:
+      name: account.core.tofu
+      capability:
+        register: app.capability.register	
+
+        

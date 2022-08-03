@@ -11,8 +11,7 @@ import { WorkspaceService } from './workspace.service';
  */
 export const services = [
   SystemService,
-  CapabilityService,
-  InvitationService,
+  // CapabilityService, # passivated for demo
   TeamService,
   WorkspaceService,
 ];
