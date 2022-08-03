@@ -11,6 +11,8 @@ on:
 
 env: 
   DB_SECRET: Ar1iMEkTcHoKV7VLl1ywsiZrvuTh8LQR
+  APP_NAME: workspace
+  REPO_NAME: acrtofu
 
 jobs:
   validate:
@@ -94,15 +96,25 @@ jobs:
         run: |
           yarn install
           yarn test
+
+      - name: Logging into ACR
+        uses: azure/docker-login@v1
+        with:
+          login-server: ${{ env.REPO_NAME }}.azurecr.io
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}             
       
-      - name: Run build test
-        run: 
-          docker build -t tofuworkspace:scannable .
+      - name: Run docker build test
+        run: | 
+          docker build \
+            -t ${{ env.REPO_NAME }}.azurecr.io/tofu${{ env.APP_NAME }}:scan \            
+          docker push ${{ env.REPO_NAME }}.azurecr.io/${{ env.APP_NAME } --all-tags
+          
 
       - name: Run scan
         uses: Azure/container-scan@v0
         with:
-          image-name: tofuworkspace:scannable
+          image-name: ${{ env.REPO_NAME }}.azurecr.io/tofu${{ env.APP_NAME }}:scan
           severity-threshold: MEDIUM
 
       - name: Do dismental
