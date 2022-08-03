@@ -41,6 +41,9 @@ jobs:
           input: ./test/arms/postgres.value.json
           output: ./test/arms/postgres.input.json
 
+      - name: Loading out param file
+        run: cat test/arms/postgres.input.json          
+
       - name: Create resource group
         uses: azure/CLI@v1
         with:
