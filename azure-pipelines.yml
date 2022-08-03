@@ -6,10 +6,8 @@ pool:
 
 stages:
   - stage: CI
-    variables: 
-      - group: tofu-variables
-      - name: postgres
-        value: 'tofu-workspace-test'
+    variables:
+    - group: tofu-variables
         
     jobs: 
       - job: Test
@@ -35,7 +33,7 @@ stages:
           - task: Bash@3
             displayName: 'Preparing the working ARM template for deployment'
             env:
-              DB_SECRET: ${PwdGenerator.pgsecret}
+              DB_SECRET: $(PwdGenerator.pgsecret)
             inputs:
               targetType: inline
               script: |
@@ -45,7 +43,7 @@ stages:
             displayName: 'Installing Postgres'
             name: BuildAssets
             inputs:
-              azureSubscription: ${azureSubscription}
+              azureSubscription: $(azureSubscription)
               scriptType: ps
               scriptLocation: inlineScript
               inlineScript: |
@@ -60,7 +58,7 @@ stages:
             displayName: 'Loading Scripted Data'
             name: LoadAssets
             inputs:
-              azureSubscription: ${azureSubscription}
+              azureSubscription: $(azureSubscription)
               scriptType: ps
               scriptLocation: inlineScript
               inlineScript: |
@@ -77,7 +75,7 @@ stages:
           - task: Bash@3
             displayName: "Running Tests"
             env:
-              DB_SECRET: ${PwdGenerator.pgsecret}
+              DB_SECRET: $(PwdGenerator.pgsecret)
             inputs:
               targetType: inline
               script: |
@@ -88,11 +86,11 @@ stages:
           - task: AzureCLI@2
             displayName: "Dismental environment"
             inputs: 
-              azureSubscription: ${azureSubscription}
+              azureSubscription: $(variablesazureSubscription)
               scriptType: ps
               scriptLocation: inlineScript
               inlineScript: |
-                az group delete ${BuildAssets.resourceGroup}
+                az group delete $(BuildAssets.resourceGroup)
 
   - stage: CD
     jobs:
@@ -103,12 +101,12 @@ stages:
           - task: Docker@2
             inputs:
               command: login
-              containerRegistry: ${azureRepoHost}
+              containerRegistry: $(azureRepoHost)
 
           - task: Docker@2
             inputs:
               command: buildAndPush
-              repository: ${azureRegistryName}
+              repository: $(azureRegistryName)
               tags: |
                 ${Build.BuildId}
                 latest
