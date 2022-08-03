@@ -98,12 +98,12 @@ jobs:
       
       - name: Run build test
         run: 
-          docker build -t tofuworkspace:${{ github.sha }} .
+          docker build -t tofuworkspace:scannable .
 
       - name: Run scan
         uses: Azure/container-scan@v0
         with:
-          image-name: tofuworkspace:${{ github.sha }}
+          image-name: tofuworkspace:scannable
           severity-threshold: MEDIUM
 
       - name: Do dismental
