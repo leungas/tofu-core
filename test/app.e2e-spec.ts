@@ -5,6 +5,7 @@ import { AppModule } from '../src/app/app.module';
 
 describe('AppController (e2e)', () => {
   let app: INestApplication;
+  let account: string;
   let workspace: string;
   let team: string;
 
@@ -35,15 +36,25 @@ describe('AppController (e2e)', () => {
       });
   });
 
+  it('/accounts/workspaces (GET)', () => {
+    return request(app.getHttpServer())
+      .get(`/accounts/${account}/workspaces`)
+      .expect(200)
+      .expect((response) => {
+        const data = response.body;
+        workspace = Reflect.get(data, 'id');
+      });
+  });  
+
   it('/workspace (PUT)', () => {
     return request(app.getHttpServer())
       .put(`/workspaces/${workspace}`)
-      .send({ name: 'Some newer name'})
+      .send({ name: 'Some newer name' })
       .expect(202)
       .expect((response) => {
         const data = response.body;
         return Reflect.get(data, 'name') === 'Some newer name';
-      })
+      });
   });
 
   it('/workspace (DELETE)', () => {
@@ -54,5 +65,5 @@ describe('AppController (e2e)', () => {
         const data = response.body;
         return data;
       });
-  });  
+  });
 });
