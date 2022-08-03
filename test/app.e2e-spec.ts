@@ -25,45 +25,4 @@ describe('AppController (e2e)', () => {
       .expect('TOFU Workspace Core is up');
   });
 
-  it('/workspace (POST)', () => {
-    return request(app.getHttpServer())
-      .post('')
-      .send({})
-      .expect(201)
-      .expect((response) => {
-        const data = response.body;
-        workspace = Reflect.get(data, 'id');
-      });
-  });
-
-  it('/accounts/workspaces (GET)', () => {
-    return request(app.getHttpServer())
-      .get(`/accounts/${account}/workspaces`)
-      .expect(200)
-      .expect((response) => {
-        const data = response.body;
-        workspace = Reflect.get(data, 'id');
-      });
-  });
-
-  it('/workspace (PUT)', () => {
-    return request(app.getHttpServer())
-      .put(`/workspaces/${workspace}`)
-      .send({ name: 'Some newer name' })
-      .expect(202)
-      .expect((response) => {
-        const data = response.body;
-        return Reflect.get(data, 'name') === 'Some newer name';
-      });
-  });
-
-  it('/workspace (DELETE)', () => {
-    return request(app.getHttpServer())
-      .delete(`/workspaces/${workspace}`)
-      .expect(201)
-      .expect((response) => {
-        const data = response.body;
-        return data;
-      });
-  });
 });
