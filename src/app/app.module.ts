@@ -26,7 +26,6 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
       inject: [ConfigService],
       useFactory: (config: ConfigService) => {
         const result = { ...config.get('datasource') };
-        console.log(result);
         return result;
       },
     }),
