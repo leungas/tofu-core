@@ -4,6 +4,8 @@ on:
   pull_request:
     types:
       - opened
+      - reopened
+      - synchronize
     branches:
       - master
 
@@ -24,9 +26,8 @@ jobs:
         id: postgres-runner
 
       - name: Generate random password
-        id: postgres-pwd
-        run: |
-          echo "::set-output name=pg-secret::$(echo $RANDOM | md5sum | head -c 20; echo)"        
+        uses: Ba4bes/Password-Generator@v0.1
+        id: postgres-pwd        
       
       - name: Create Azure Env
         uses: azure/login@v1
@@ -36,23 +37,26 @@ jobs:
       - name: Get our param file
         uses: danielr1996/envsubst-action@1.0.0
         env:
-          DB_SECRET: ${{ steps.postgres-pwd.outputs.pg-secret }}
+          DB_SECRET: ${{ steps.postgres-pwd.outputs.password }}
         with:
-          input: ./test/arm/postgres.value.json
-          output: ./test/arm/postgres.input.json
+          input: ./test/arms/postgres.value.json
+          output: ./test/arms/postgres.input.json
+
+      - name: Loading out param file
+        run: cat test/arms/postgres.input.json
 
       - name: Create resource group
         uses: azure/CLI@v1
         with:
-          inlineScript: |
+          inlineScript: |            
             az group create --name rg-eas-tofu-test --location eastasia
-            az deployment group create -n create-db -g rg-eas-tofu-test -f test/arm/postgres.arm.json -p test/arm/postgres.input.json > output.json
+            az deployment group create -n create-db -g rg-eas-tofu-test -f test/arms/postgres.arm.json -p test/arms/postgres.input.json > output.json
 
       - name: Capture DB name data
         run: |
-            echo "DB_SERVER_NAME=`az postgres server list -g ${{ github.event.inputs.resource_group }} --query '[0].name' -o tsv`" >> $GITHUB_ENV
+            echo "DB_SERVER_NAME=`az postgres server list -g rg-eas-tofu-test --query '[0].name' -o tsv`" >> $GITHUB_ENV
         
-      - name: Create resource group
+      - name: Setup DB firewall
         uses: azure/CLI@v1
         with:
           inlineScript: |
@@ -67,15 +71,26 @@ jobs:
         uses: azure/postgresql@v1
         continue-on-error: true
         with:
-          connection-string: "host=${{ env.DB_SERVER_NAME }}.postgres.database.azure.com port=5432 dbname=postgres user=postgres@${{ env.DB_SERVER_NAME }} password=${{ steps.postgres-pwd.outputs.pg-secret }} sslmode=require"
+          connection-string: "host=${{ env.DB_SERVER_NAME }}.postgres.database.azure.com port=5432 dbname=postgres user=postgres@${{ env.DB_SERVER_NAME }} password=${{ steps.postgres-pwd.outputs.password }} sslmode=require"
           server-name: ${{ env.DB_SERVER_NAME }}
           plsql-file: "test/arm/create-db.sql"
-        
+
+      - name: Get our param file
+        uses: danielr1996/envsubst-action@1.0.0
+        env:
+          POSTGRES_HOST: ${{ env.DB_SERVER_NAME }}.postgres.database.azure.com
+          POSTGRES_SECRET: ${{ steps.postgres-pwd.outputs.password }}
+        with:
+          input: ./src/infrastructure/config/e2e.template.yaml
+          output: ./src/infrastructure/config/e2e.config.yaml
+
       - name: Run tests
         env:
           ENV_APP_CONFIG: 'infrastructure/config/e2e.config.yaml'
-        run: 
+        run: |
+          env
           yarn install
+          yarn build
           yarn test:e2e
       
       - name: Run build test
