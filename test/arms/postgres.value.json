@@ -1,0 +1,8 @@
+{
+    "application": {
+        "value": "core"
+    },
+    "db-secret": {
+        "value": "${DB_SECRET}"
+    }
+}
