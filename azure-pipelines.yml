@@ -45,7 +45,7 @@ stages:
             displayName: 'Installing Postgres'
             name: BuildAssets
             inputs:
-              azureSubscription: 'Test Subscription'
+              azureSubscription: 'MyARMConnection'
               scriptType: ps
               scriptLocation: inlineScript
               inlineScript: |
@@ -60,7 +60,7 @@ stages:
             displayName: 'Loading Scripted Data'
             name: LoadAssets
             inputs:
-              azureSubscription: 'Test Subscription'
+              azureSubscription: 'MyARMConnection'
               scriptType: ps
               scriptLocation: inlineScript
               inlineScript: |
@@ -88,7 +88,7 @@ stages:
           - task: AzureCLI@2
             displayName: "Dismental environment"
             inputs: 
-              azureSubscription: 'Test Subscription'
+              azureSubscription: 'MyARMConnection'
               scriptType: ps
               scriptLocation: inlineScript
               inlineScript: |
