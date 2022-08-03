@@ -41,9 +41,6 @@ jobs:
           input: ./test/arms/postgres.value.json
           output: ./test/arms/postgres.input.json
 
-      - name: Loading out param file
-        run: cat test/arms/postgres.input.json
-
       - name: Create resource group
         uses: azure/CLI@v1
         with:
@@ -87,7 +84,7 @@ jobs:
         env:
           ENV_APP_CONFIG: 'infrastructure/config/e2e.config.yaml'
         run: |
-          env
+          cat src/infrastructure/config/e2e.config.yaml
           yarn install
           yarn build
           yarn test:e2e
