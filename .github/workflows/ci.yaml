@@ -73,13 +73,23 @@ jobs:
           connection-string: "host=${{ env.DB_SERVER_NAME }}.postgres.database.azure.com port=5432 dbname=postgres user=postgres@${{ env.DB_SERVER_NAME }} password=${{ steps.postgres-pwd.outputs.password }} sslmode=require"
           server-name: ${{ env.DB_SERVER_NAME }}
           plsql-file: "test/arm/create-db.sql"
-        
+
+      - name: Get our param file
+        uses: danielr1996/envsubst-action@1.0.0
+        env:
+          POSTGRES_HOST: ${{ env.DB_SERVER_NAME }}.postgres.database.azure.com
+          POSTGRES_SECRET: ${{ steps.postgres-pwd.outputs.password }}
+        with:
+          input: ./src/infrastructure/config/app.template.yaml
+          output: ./src/infrastructure/config/e2e.config.yaml
+
       - name: Run tests
         env:
           ENV_APP_CONFIG: 'infrastructure/config/e2e.config.yaml'
-        run: 
+        run: |
           env
           yarn install
+          yarn build
           yarn test:e2e
       
       - name: Run build test
