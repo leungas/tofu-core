@@ -79,6 +79,7 @@ jobs:
         uses: danielr1996/envsubst-action@1.0.0
         env:
           POSTGRES_HOST: ${{ env.DB_SERVER_NAME }}.postgres.database.azure.com
+          POSTGRES_USER: postgres@${{ env.DB_SERVER_NAME }}
           POSTGRES_SECRET: ${{ steps.postgres-pwd.outputs.password }}
         with:
           input: ./src/infrastructure/config/e2e.template.yaml
