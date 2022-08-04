@@ -26,5 +26,5 @@ jobs:
 
       - name: docker the image
         run: | 
-          docker build -t ${{ env.REPO_NAME }}.azurecr.io/tofu${{ env.app }}:${{ github.sha }} -t ${{ env.REPO_NAME }}.azurecr.io/tofu${{ env.app }}:${{ github.sha }}:latest .
-          docker push ${{ env.REPO_NAME }}.azurecr.io/tofu${{ env.app } --all-tags
+          docker build -t ${{ env.REPO_NAME }}.azurecr.io/tofu${{ env.APP_NAME }}:${{ github.sha }} -t ${{ env.REPO_NAME }}.azurecr.io/tofu${{ env.APP_NAME }}:${{ github.sha }}:latest .
+          docker push ${{ env.REPO_NAME }}.azurecr.io/tofu${{ env.APP_NAME }} --all-tags
