@@ -120,7 +120,7 @@ jobs:
         uses: azure/CLI@v1
         with:
           inlineScript:
-            az group delete --name rg-eas-tofu-test
+            az group delete --name rg-eas-tofu-test --yes
 
 
 
