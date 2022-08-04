@@ -1,1 +1,1 @@
-CREATE DATABASE tofu.core.workspace;
+CREATE DATABASE "tofu.core.workspace";

@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
-import { UserServiceProvider } from 'src/infrastructure/clients/amqp/users/user.producer';
+import { UserServiceProvider } from '../../infrastructure/clients/amqp/users/user.producer';
 import { UserProvisionedEvent } from '../events/user.provision.event';
 
 /**
