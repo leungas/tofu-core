@@ -12,6 +12,7 @@ import {
 import { MemberModel } from './member.model';
 import { WorkspaceModel } from './workspace.model';
 import { InvitiationModel } from './invitation.model';
+import { ProfileModel } from './profile.model';
 
 /**
  * @class
@@ -38,6 +39,9 @@ export class UserModel {
   @CreateDateColumn()
   createdOn: Date;
 
+  @Column({nullable: true})
+  dob: Date;
+
   @Column()
   email: string;
 
@@ -46,6 +50,12 @@ export class UserModel {
 
   @Column({ nullable: true })
   firstName: string;
+
+  @Column()
+  gender: string;
+
+  @Column({nullable: true})
+  introduction: string;
 
   @OneToOne(() => InvitiationModel, (invitation) => invitation.linkedUser, {
     nullable: true,
@@ -64,4 +74,7 @@ export class UserModel {
 
   @Column({ nullable: true })
   mobile: string;
+
+  @OneToMany(() => ProfileModel, (profile) => profile.owner)
+  profile: ProfileModel[];
 }

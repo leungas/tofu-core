@@ -2,8 +2,10 @@ import { Field, GraphQLISODateTime, ObjectType } from '@nestjs/graphql';
 import { ApiProperty } from '@nestjs/swagger';
 import {
   IsBoolean,
+  IsDateString,
   IsDefined,
   IsEmail,
+  IsIn,
   IsInstance,
   IsNotEmpty,
   IsOptional,
@@ -11,6 +13,7 @@ import {
 } from 'class-validator';
 import { v4 as uuid } from 'uuid';
 import { Attachment } from '../types/attachment.type';
+import { Profile } from './profile.entity';
 
 /**
  * @class
@@ -124,6 +127,24 @@ export class User {
 
   /**
    * @property
+   * @name dob
+   * @description The date of birth of the user
+   * @type {date}
+   */
+  @Field(() => GraphQLISODateTime, {nullable: true, description: 'The date of birth of the user'})
+  @ApiProperty({
+    name: 'dob',
+    description: 'The date of birth of the user',
+    type: 'date',
+    example: (new Date()).toISOString(),
+    required: false,
+  })
+  @IsDateString()
+  @IsOptional()
+  dob?: Date;
+
+  /**
+   * @property
    * @name email
    * @description The email of the user
    * @type {string}
@@ -179,6 +200,42 @@ export class User {
 
   /**
    * @property
+   * @name gender
+   * @description The gender of the user
+   * @type {string}
+   */
+  @Field(() => String, {description: 'The gender of the user'})
+  @ApiProperty({
+    name: 'gender',
+    description: 'The gender of the user',
+    type: 'string',
+    default: 'unknown',
+    example: 'unknown',
+    required: false,
+  })
+  @IsIn(['male', 'female', 'unknown'])
+  @IsOptional()
+  gender?: 'male' | 'female' | 'unknown' = 'unknown';
+
+  /**
+   * @property
+   * @name introduction
+   * @description The introduction profile of the user
+   * @type {string}
+   */
+  @Field(() => String, {nullable: true, description: 'The introduction profile of the user'})
+  @ApiProperty({
+    name: 'introduction',
+    description: 'The introduction profile of the user',
+    type: 'string',
+    example: 'John Smith\'s personal profile...',
+    required: false,
+  })
+  @IsOptional()
+  introduction?: string;
+
+  /**
+   * @property
    * @name lastName
    * @description The last name the user
    * @type {string}
@@ -231,4 +288,26 @@ export class User {
   @IsPhoneNumber()
   @IsDefined()
   mobile?: string;
+
+  /**
+   * @property
+   * @name profile
+   * @description The list of profiles for the user
+   * @type {Profile[]}
+   */
+  @Field(() => [Profile], {nullable: true, defaultValue: [], description: 'The list of profiles for the user'})
+  @ApiProperty({
+    name: 'profile',
+    description: 'The list of profiles for the user',
+    type: 'array',
+    items: {
+      type: 'Profile',
+    },
+    default: [],
+    example: [],
+    required: false,
+  })
+  @IsInstance(Profile, {each: true})
+  @IsOptional()
+  profile: Profile[] = [];
 }

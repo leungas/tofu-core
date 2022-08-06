@@ -1,6 +1,6 @@
 import { Field, GraphQLISODateTime, Int, ObjectType } from '@nestjs/graphql';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsBoolean, IsOptional } from 'class-validator';
+import { IsBoolean, IsDefined, IsNotEmpty, IsOptional } from 'class-validator';
 import { v4 as uuid } from 'uuid';
 import { User } from './user.entity';
 
@@ -87,6 +87,24 @@ export class Member {
     readOnly: true,
   })
   lastUpdated?: Date;
+
+  /**
+   * @property
+   * @name role
+   * @description What role does this user play in the team
+   * @type {string}
+   */
+  @Field(() => String, {description: 'What role does this user play in the team?'})
+  @ApiProperty({
+    name: 'role',
+    description: 'What role does this user play in the team?',
+    type: 'string',
+    example: 'Regular member',
+    required: true,
+  })
+  @IsNotEmpty()
+  @IsDefined()
+  role: string;
 
   /**
    * @property

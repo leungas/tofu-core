@@ -25,7 +25,7 @@ export class Invitation {
     example: uuid(),
     readOnly: true,
   })
-  id: string;
+  id?: string;
 
   /**
    * @property
