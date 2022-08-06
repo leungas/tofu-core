@@ -190,7 +190,7 @@ export class WorkspaceService {
     const entity = await this.workspaces.search(filter);
     this.logger.debug(`update(): $entity = ${JSON.stringify(entity)}`);
     if (entity.length === 0) throw new NotFoundException();
-    const mutation = Object.assign(entity[0], request);
+    const mutation = Object.assign(entity[0], request) as Workspace;
     this.logger.debug(`update(): $mutation = ${JSON.stringify(mutation)}`);
     const result = await this.workspaces.update(mutation);
     this.logger.debug(`update(): $result = ${JSON.stringify(result)}`);

@@ -39,7 +39,7 @@ export class UserModel {
   @CreateDateColumn()
   createdOn: Date;
 
-  @Column({nullable: true})
+  @Column({ nullable: true })
   dob: Date;
 
   @Column()
@@ -52,9 +52,9 @@ export class UserModel {
   firstName: string;
 
   @Column()
-  gender: string;
+  gender: 'male' | 'female' | 'unknown';
 
-  @Column({nullable: true})
+  @Column({ nullable: true })
   introduction: string;
 
   @OneToOne(() => InvitiationModel, (invitation) => invitation.linkedUser, {

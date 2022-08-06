@@ -1,6 +1,12 @@
-import { profile } from "console";
-import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
-import { ProfileModel } from "./profile.model";
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
+import { ProfileModel } from './profile.model';
 
 /**
  * @class
@@ -8,34 +14,32 @@ import { ProfileModel } from "./profile.model";
  * @description The preference data storage schema
  * @author Mark Leung <leungas@gmail.com>
  */
-@Entity({name: 'preferences'})
+@Entity({ name: 'preferences' })
 export class PreferenceModel {
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
-    @PrimaryGeneratedColumn('uuid')
-    id: string;
+  @Column()
+  application: string;
 
-    @Column()
-    application: string;
+  @Column()
+  code: string;
 
-    @Column()
-    code: string;
+  @CreateDateColumn()
+  createdOn: Date;
 
-    @CreateDateColumn()
-    createdOn: Date;
+  @Column()
+  defaultValue: string;
 
-    @Column()
-    defaultValue: string;
+  @Column({ nullable: true })
+  description?: string;
 
-    @Column({nullable: true})
-    description?: string;
+  @Column({ default: false })
+  isAssignable: boolean;
 
-    @Column({default: false})
-    isAssignable: boolean;
+  @UpdateDateColumn()
+  lastUpdatedOn: Date;
 
-    @UpdateDateColumn()
-    lastUpdatedOn: Date;
-
-    @OneToMany(() => ProfileModel, (profile) => profile.preference)
-    profiles: ProfileModel[];
-    
+  @OneToMany(() => ProfileModel, (profile) => profile.preference)
+  profiles: ProfileModel[];
 }

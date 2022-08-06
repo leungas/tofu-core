@@ -43,8 +43,17 @@ describe('AppController', () => {
               return [
                 {
                   id: uuid(),
+                  role: 'some roles',
                   owner: {
                     id: 'abcdef',
+                    gender: 'unknown',
+                    activated: true,
+                    activatedOn: new Date().toISOString(),
+                    createdOn: new Date().toISOString(),
+                    email: 'john.smith@costono.com',
+                    enabled: true,
+                    firstName: 'John',
+                    lastName: 'Smith',
                   },
                 },
               ];
@@ -69,7 +78,14 @@ describe('AppController', () => {
                 },
               ]);
             } else {
-              return Promise.resolve([{ id: uuid() }, { id: uuid() }]);
+              return Promise.resolve([
+                {
+                  id: uuid(),
+                },
+                {
+                  id: uuid(),
+                },
+              ]);
             }
         }
       }),
@@ -137,6 +153,7 @@ describe('AppController', () => {
           firstName: 'John',
           lastName: 'Smith',
           email: 'john.smith@costono.com',
+          profile: [],
         },
         name: 'test workspace (not repeat)',
       };

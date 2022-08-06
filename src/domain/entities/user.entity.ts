@@ -131,12 +131,15 @@ export class User {
    * @description The date of birth of the user
    * @type {date}
    */
-  @Field(() => GraphQLISODateTime, {nullable: true, description: 'The date of birth of the user'})
+  @Field(() => GraphQLISODateTime, {
+    nullable: true,
+    description: 'The date of birth of the user',
+  })
   @ApiProperty({
     name: 'dob',
     description: 'The date of birth of the user',
     type: 'date',
-    example: (new Date()).toISOString(),
+    example: new Date().toISOString(),
     required: false,
   })
   @IsDateString()
@@ -204,7 +207,7 @@ export class User {
    * @description The gender of the user
    * @type {string}
    */
-  @Field(() => String, {description: 'The gender of the user'})
+  @Field(() => String, { description: 'The gender of the user' })
   @ApiProperty({
     name: 'gender',
     description: 'The gender of the user',
@@ -223,12 +226,15 @@ export class User {
    * @description The introduction profile of the user
    * @type {string}
    */
-  @Field(() => String, {nullable: true, description: 'The introduction profile of the user'})
+  @Field(() => String, {
+    nullable: true,
+    description: 'The introduction profile of the user',
+  })
   @ApiProperty({
     name: 'introduction',
     description: 'The introduction profile of the user',
     type: 'string',
-    example: 'John Smith\'s personal profile...',
+    example: "John Smith's personal profile...",
     required: false,
   })
   @IsOptional()
@@ -295,7 +301,11 @@ export class User {
    * @description The list of profiles for the user
    * @type {Profile[]}
    */
-  @Field(() => [Profile], {nullable: true, defaultValue: [], description: 'The list of profiles for the user'})
+  @Field(() => [Profile], {
+    nullable: true,
+    defaultValue: [],
+    description: 'The list of profiles for the user',
+  })
   @ApiProperty({
     name: 'profile',
     description: 'The list of profiles for the user',
@@ -307,7 +317,7 @@ export class User {
     example: [],
     required: false,
   })
-  @IsInstance(Profile, {each: true})
+  @IsInstance(Profile, { each: true })
   @IsOptional()
   profile: Profile[] = [];
 }

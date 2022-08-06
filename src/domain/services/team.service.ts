@@ -66,9 +66,12 @@ export class TeamService {
     this.logger.debug(`assign(): $request = ${JSON.stringify(request)}`);
     const team = await this.teams.get(id);
     if (!team) throw new NotFoundException();
+    console.log(`team: ${JSON.stringify(team)}`);
     const result = await this.teams.assign(
       team,
-      request.members.map((i) => Object.assign(new User(), i)),
+      request.members.map((i) => {
+        return Object.assign(new User(), i);
+      }),
     );
     const event = new TeamReassignedEvent(result);
     await this.emitter.emitAsync('workspaces.team.reassigned', event);

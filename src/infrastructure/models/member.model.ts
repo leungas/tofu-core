@@ -23,6 +23,9 @@ export class MemberModel {
   @UpdateDateColumn()
   lastUpdatedOn: Date;
 
+  @Column()
+  role: string;
+
   @ManyToOne(() => TeamModel, (team) => team.members)
   team: TeamModel;
 

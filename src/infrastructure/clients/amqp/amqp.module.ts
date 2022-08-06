@@ -5,6 +5,6 @@ import { AccessModule } from './access/access.module';
 
 @Module({
   imports: [AccountsModule, UsersModule, AccessModule],
-  exports: [AccountsModule],
+  exports: [AccountsModule, UsersModule],
 })
 export class AmqpModule {}

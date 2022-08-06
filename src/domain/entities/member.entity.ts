@@ -94,7 +94,9 @@ export class Member {
    * @description What role does this user play in the team
    * @type {string}
    */
-  @Field(() => String, {description: 'What role does this user play in the team?'})
+  @Field(() => String, {
+    description: 'What role does this user play in the team?',
+  })
   @ApiProperty({
     name: 'role',
     description: 'What role does this user play in the team?',

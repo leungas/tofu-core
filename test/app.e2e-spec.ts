@@ -7,9 +7,6 @@ import configuration from '../src/infrastructure/config/configuration';
 
 describe('AppController (e2e)', () => {
   let app: INestApplication;
-  let account: string;
-  let workspace: string;
-  let team: string;
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
